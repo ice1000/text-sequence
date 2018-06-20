@@ -1,4 +1,4 @@
-package org.ice1000.textseq;
+package org.ice1000.textseq.test;
 
 import org.ice1000.textseq.impl.ArrayListTextSequence;
 import org.junit.Test;

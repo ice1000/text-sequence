@@ -1,5 +1,6 @@
-package org.ice1000.textseq;
+package org.ice1000.textseq.test;
 
+import org.ice1000.textseq.TextSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
