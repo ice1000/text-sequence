@@ -4,4 +4,12 @@ environment:
 
 build_script:
   - gradlew check --info --no-daemon
+
+artifacts:
+  - path: 'common\build\libs\*.jar'
+    name: common
+  - path: 'impl-builder\build\libs\*.jar'
+    name: impl-builder
+  - path: 'impl-gap\build\libs\*.jar'
+    name: impl-gap
 #
