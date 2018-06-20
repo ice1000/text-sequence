@@ -1,23 +1,35 @@
 package org.ice1000.textseq;
 
-import org.ice1000.textseq.impl.ArrayListTextSequence;
-import org.junit.Test;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("WeakerAccess")
 public class TextSequenceTest {
-	@Test
-	public void main() {
-		TextSequence characters = new ArrayListTextSequence();
+	public TextSequenceTest(@NotNull Supplier<@NotNull TextSequence> sequenceSupplier) {
+		this.sequenceSupplier = sequenceSupplier;
+	}
+
+	private @NotNull Supplier<@NotNull TextSequence> sequenceSupplier;
+
+	public void runAll() {
+		test0();
+		test1();
+		test2();
+	}
+
+	public void test0() {
+		TextSequence characters = sequenceSupplier.get();
 		String s = "reiuji utsuho";
 		for (int i = 0; i < s.length(); i++) characters.append(s.charAt(i));
 		characters.subSequence(3, 5);
 		assertEquals(s.substring(3, 7), characters.subSequence(3, 7).toString());
 	}
 
-	@Test
-	public void basic() {
-		TextSequence characters = new ArrayListTextSequence();
+	public void test1() {
+		TextSequence characters = sequenceSupplier.get();
 		characters.append('a');
 		characters.append('b');
 		characters.append('c');
@@ -25,9 +37,8 @@ public class TextSequenceTest {
 		assertEquals('a', characters.charAt(0));
 	}
 
-	@Test
-	public void insert() {
-		TextSequence characters = new ArrayListTextSequence();
+	public void test2() {
+		TextSequence characters = sequenceSupplier.get();
 		characters.append("abc");
 		assertEquals("abc", characters.toString());
 		assertEquals('a', characters.charAt(0));

@@ -1,1 +1,1 @@
-include("common", "impl-builder")
+include("common", "impl-builder", "test-common")
