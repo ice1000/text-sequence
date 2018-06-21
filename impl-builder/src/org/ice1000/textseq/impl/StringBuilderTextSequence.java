@@ -31,21 +31,26 @@ public class StringBuilderTextSequence implements TextSequence {
 
 	@Override
 	public void insert(int index, char c) {
+		checkIndex(index);
 		impl.insert(index, c);
 	}
 
 	@Override
 	public void insert(int index, @NotNull CharSequence sequence) {
+		checkIndex(index);
 		impl.insert(index, sequence.toString());
 	}
 
 	@Override
 	public void delete(int index) {
+		checkIndex(index);
 		impl.deleteCharAt(index);
 	}
 
 	@Override
 	public void delete(int begin, int end) {
+		checkIndex(begin);
+		checkIndex(end);
 		impl.delete(begin, end);
 	}
 

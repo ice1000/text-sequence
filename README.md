@@ -19,6 +19,7 @@ Windows|Linux
 + [ ] `LineSpan` implementation, say, **the line span method**, [Hemlock][hemlock]
 + [ ] `SizedBuffer` implementation, say, **fixed size buffer**
 + [ ] `PieceTable` implementation, say, **the piece table method**, [VSCode][code], [AbiWord][abiw]
++ [X] `Rope` (aka Balanced Tree), [Vim][vim]
 
   [devkt]: https://github.com/ice1000/dev-kt
   [emacs]: https://www.gnu.org/software/emacs/
@@ -27,3 +28,4 @@ Windows|Linux
   [hemlock]: https://www.cons.org/cmucl/hemlock/
   [code]: https://code.visualstudio.com/
   [abiw]: https://www.abisource.com/
+  [vim]: https://www.vim.org/

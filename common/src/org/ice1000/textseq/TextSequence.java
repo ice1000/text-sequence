@@ -20,18 +20,23 @@ public interface TextSequence extends CharSequence {
 	}
 
 	default void insert(int index, char c) {
+		checkIndex(index);
 		insert(index, String.valueOf(c));
 	}
 
 	default void delete(int index) {
+		checkIndex(index);
 		delete(index, index + 1);
 	}
 
 	default void insert(int index, @NotNull CharSequence sequence) {
+		checkIndex(index);
 		for (int i = 0; i < sequence.length(); i++) insert(index + i, sequence.charAt(i));
 	}
 
 	default void delete(int begin, int end) {
+		checkIndex(begin);
+		checkIndex(end);
 		for (int i = begin; i < end; i++) delete(begin);
 	}
 
@@ -41,5 +46,11 @@ public interface TextSequence extends CharSequence {
 
 	default void append(@NotNull CharSequence sequence) {
 		insert(length(), sequence);
+	}
+
+	default void checkIndex(int index) throws StringIndexOutOfBoundsException {
+		if (index < 0) throw new StringIndexOutOfBoundsException("Negative number " + index);
+		int length = length();
+		if (index > length) throw new StringIndexOutOfBoundsException("Index " + index + ", length " + length);
 	}
 }
