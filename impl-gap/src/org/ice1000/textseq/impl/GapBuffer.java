@@ -14,7 +14,7 @@ public class GapBuffer implements TextSequence {
 	private char[] buffer;
 	private int gapBegin, gapEnd;
 
-	public GapBuffer(@NotNull char[] buffer) {
+	private GapBuffer(@NotNull char[] buffer) {
 		this.buffer = buffer;
 		this.gapBegin = 0;
 		this.gapEnd = buffer.length;
@@ -59,16 +59,18 @@ public class GapBuffer implements TextSequence {
 		else {
 			moveGap(index - gapBegin);
 			assert index == gapBegin;
-			gapBegin--;
+			gapEnd++;
 		}
 	}
 
 	private void moveGap(int shift) {
 		int afterBegin = gapBegin + shift;
 		int afterEnd = gapEnd + shift;
-		checkIndex(afterBegin);
-		checkIndex(afterEnd);
+		checkInternalIndex(afterBegin);
+		checkInternalIndex(afterEnd);
 		System.arraycopy(buffer, afterBegin, buffer, afterEnd, Math.abs(shift));
+		gapBegin = afterBegin;
+		gapEnd = afterEnd;
 	}
 
 	private void ensureLength(int length) {
@@ -81,6 +83,12 @@ public class GapBuffer implements TextSequence {
 		System.arraycopy(buffer, gapEnd, newBuffer, newGapEnd, bufferLength - gapEnd);
 		gapEnd = newGapEnd;
 		buffer = newBuffer;
+	}
+
+	private void checkInternalIndex(int index) {
+		if (index < 0) throw new StringIndexOutOfBoundsException("Negative number " + index);
+		int length = buffer.length;
+		if (index > length) throw new StringIndexOutOfBoundsException("Index " + index + ", length " + length);
 	}
 
 	@Override
