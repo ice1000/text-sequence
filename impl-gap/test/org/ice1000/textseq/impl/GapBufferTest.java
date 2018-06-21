@@ -19,4 +19,16 @@ public class GapBufferTest extends TextSequenceTest {
 	public void benchmark() {
 		super.benchmark();
 	}
+
+	@Test
+	@Override
+	public void intenseBenchmark() {
+		super.intenseBenchmark();
+	}
+
+	@Test
+	@Override
+	public void realWorldTextEditorBenchmark() {
+		super.realWorldTextEditorBenchmark();
+	}
 }

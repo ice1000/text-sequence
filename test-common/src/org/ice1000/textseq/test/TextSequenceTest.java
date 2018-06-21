@@ -60,6 +60,37 @@ public class TextSequenceTest {
 		benchmark(3000);
 	}
 
+	public void intenseBenchmark() {
+		benchmark(15000);
+	}
+
+	public void realWorldTextEditorBenchmark() {
+		realWorldTextEditorBenchmark(15000);
+	}
+
+	public void realWorldTextEditorBenchmark(int loopCount) {
+		TextSequence sequence = sequenceSupplier.get();
+		sequence.insert(0, "init");
+		Random random = new Random();
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < loopCount; i++)
+			sequence.insert(sequence.length(), String.valueOf(random.nextDouble()));
+		System.out.println("Insertion: " + (System.currentTimeMillis() - start));
+		start = System.currentTimeMillis();
+		int length = sequence.length();
+		common(loopCount, sequence, random, length);
+		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
+	}
+
+	private void common(int loopCount, TextSequence sequence, Random random, int length) {
+		for (int i = 0; i < loopCount; i++) {
+			int begin = random.nextInt(sequence.length());
+			int size = random.nextInt(length / loopCount);
+			if (begin + size >= sequence.length()) begin = 0;
+			sequence.delete(begin, begin + size);
+		}
+	}
+
 	public void benchmark(int loopCount) {
 		TextSequence sequence = sequenceSupplier.get();
 		sequence.insert(0, "init");
@@ -70,12 +101,7 @@ public class TextSequenceTest {
 		System.out.println("Insertion: " + (System.currentTimeMillis() - start));
 		start = System.currentTimeMillis();
 		int length = sequence.length();
-		for (int i = 0; i < loopCount; i++) {
-			int begin = random.nextInt(sequence.length());
-			int size = random.nextInt(length / loopCount);
-			if (begin + size >= sequence.length()) begin = 0;
-			sequence.delete(begin, begin + size);
-		}
+		common(loopCount, sequence, random, length);
 		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
 	}
 }

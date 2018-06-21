@@ -19,4 +19,10 @@ public class TrivialArrayListTest extends TextSequenceTest {
 	public void benchmark() {
 		super.benchmark();
 	}
+
+	@Test
+	@Override
+	public void intenseBenchmark() {
+		super.intenseBenchmark();
+	}
 }
