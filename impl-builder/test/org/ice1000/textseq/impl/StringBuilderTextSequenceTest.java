@@ -13,4 +13,10 @@ public class StringBuilderTextSequenceTest extends TextSequenceTest {
 	public void runAll() {
 		super.runAll();
 	}
+
+	@Test
+	@Override
+	public void benchmark() {
+		super.benchmark();
+	}
 }

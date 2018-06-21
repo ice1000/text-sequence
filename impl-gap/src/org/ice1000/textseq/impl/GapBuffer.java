@@ -55,20 +55,25 @@ public class GapBuffer implements TextSequence {
 
 	@Override
 	public void delete(int index) {
-		if (index == gapBegin) gapBegin--;
-		else {
+		if (index == gapBegin) {
+			if (gapBegin != 0) gapBegin--;
+			else gapEnd++;
+		} else {
 			moveGap(index - gapBegin);
 			assert index == gapBegin;
-			gapEnd++;
+			if (gapBegin != 0) gapBegin--;
+			else gapEnd++;
 		}
 	}
 
 	private void moveGap(int shift) {
+		if (shift == 0) return;
 		int afterBegin = gapBegin + shift;
 		int afterEnd = gapEnd + shift;
 		checkInternalIndex(afterBegin);
 		checkInternalIndex(afterEnd);
-		System.arraycopy(buffer, afterBegin, buffer, afterEnd, Math.abs(shift));
+		if (shift > 0) System.arraycopy(buffer, gapBegin, buffer, gapEnd, shift);
+		else System.arraycopy(buffer, afterBegin, buffer, afterEnd, -shift);
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
 	}

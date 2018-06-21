@@ -51,6 +51,7 @@ public interface TextSequence extends CharSequence {
 	default void checkIndex(int index) throws StringIndexOutOfBoundsException {
 		if (index < 0) throw new StringIndexOutOfBoundsException("Negative number " + index);
 		int length = length();
-		if (index > length) throw new StringIndexOutOfBoundsException("Index " + index + ", length " + length);
+		if (index > length)
+			throw new StringIndexOutOfBoundsException("Index " + index + ", length " + length);
 	}
 }

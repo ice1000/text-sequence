@@ -3,6 +3,7 @@ package org.ice1000.textseq.test;
 import org.ice1000.textseq.TextSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
 import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
@@ -53,5 +54,28 @@ public class TextSequenceTest {
 		assertEquals("bc", characters.toString());
 		characters.delete(0);
 		assertEquals('c', characters.charAt(0));
+	}
+
+	public void benchmark() {
+		benchmark(3000);
+	}
+
+	public void benchmark(int loopCount) {
+		TextSequence sequence = sequenceSupplier.get();
+		sequence.insert(0, "init");
+		Random random = new Random();
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < loopCount; i++)
+			sequence.insert(random.nextInt(sequence.length()), String.valueOf(random.nextDouble()));
+		System.out.println("Insertion: " + (System.currentTimeMillis() - start));
+		start = System.currentTimeMillis();
+		int length = sequence.length();
+		for (int i = 0; i < loopCount; i++) {
+			int begin = random.nextInt(sequence.length());
+			int size = random.nextInt(length / loopCount);
+			if (begin + size >= sequence.length()) begin = 0;
+			sequence.delete(begin, begin + size);
+		}
+		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
 	}
 }
