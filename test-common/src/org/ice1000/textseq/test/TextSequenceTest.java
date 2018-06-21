@@ -73,22 +73,22 @@ public class TextSequenceTest {
 		sequence.insert(0, "init");
 		Random random = new Random();
 		long start = System.currentTimeMillis();
-		for (int i = 0; i < loopCount; i++)
-			sequence.insert(sequence.length(), String.valueOf(random.nextDouble()));
+		String text =
+				"This is just a test string, which is intended to be very long, in order to make the test more " +
+						"intense, since double are truncated when they're converted into strings.";
+		for (int i = 0, index = 0; i < loopCount; i++, index += text.length()) {
+			sequence.insert(index, text);
+			if (random.nextInt(100) < 2) index = 0;
+		}
 		System.out.println("Insertion: " + (System.currentTimeMillis() - start));
 		start = System.currentTimeMillis();
 		int length = sequence.length();
-		common(loopCount, sequence, random, length);
-		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
-	}
-
-	private void common(int loopCount, TextSequence sequence, Random random, int length) {
-		for (int i = 0; i < loopCount; i++) {
-			int begin = random.nextInt(sequence.length());
-			int size = random.nextInt(length / loopCount);
-			if (begin + size >= sequence.length()) begin = 0;
-			sequence.delete(begin, begin + size);
+		for (int i = 0, index = random.nextInt(length); i < loopCount; i++) {
+			int size = random.nextInt(Math.min(length / loopCount, sequence.length() - index));
+			sequence.delete(index, index + size);
+			while (index > sequence.length()) index = random.nextInt(sequence.length());
 		}
+		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
 	}
 
 	public void benchmark(int loopCount) {
@@ -101,7 +101,12 @@ public class TextSequenceTest {
 		System.out.println("Insertion: " + (System.currentTimeMillis() - start));
 		start = System.currentTimeMillis();
 		int length = sequence.length();
-		common(loopCount, sequence, random, length);
+		for (int i = 0; i < loopCount; i++) {
+			int begin = random.nextInt(sequence.length());
+			int size = random.nextInt(length / loopCount);
+			if (begin + size >= sequence.length()) begin = 0;
+			sequence.delete(begin, begin + size);
+		}
 		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
 	}
 }

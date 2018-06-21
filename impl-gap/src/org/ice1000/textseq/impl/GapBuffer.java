@@ -54,6 +54,20 @@ public class GapBuffer implements TextSequence {
 	}
 
 	@Override
+	public void insert(int index, @NotNull CharSequence sequence) {
+		int length = sequence.length();
+		ensureLength(length() + length);
+		if (index == gapBegin) {
+			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
+		} else {
+			moveGap(index - gapBegin);
+			assert index == gapBegin;
+			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
+		}
+		gapBegin += length;
+	}
+
+	@Override
 	public void delete(int index) {
 		if (index == gapBegin) {
 			if (gapBegin != 0) gapBegin--;
@@ -81,7 +95,7 @@ public class GapBuffer implements TextSequence {
 	private void ensureLength(int length) {
 		int bufferLength = buffer.length;
 		if (bufferLength >= length) return;
-		int newLength = Math.max(bufferLength * 3 / 2, length);
+		int newLength = Math.max(bufferLength * 2, length);
 		char[] newBuffer = new char[newLength];
 		System.arraycopy(buffer, 0, newBuffer, 0, gapBegin);
 		int newGapEnd = newLength - length() + gapBegin;
