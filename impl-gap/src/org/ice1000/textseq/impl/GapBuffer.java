@@ -17,7 +17,7 @@ public class GapBuffer implements TextSequence {
 	public GapBuffer(@NotNull char[] buffer) {
 		this.buffer = buffer;
 		this.gapBegin = 0;
-		this.gapEnd = buffer.length >> 1;
+		this.gapEnd = buffer.length;
 	}
 
 	public GapBuffer() {
@@ -42,6 +42,26 @@ public class GapBuffer implements TextSequence {
 		return gapEnd - gapBegin;
 	}
 
+	@Override
+	public void insert(int index, char c) {
+		ensureLength(length() + 1);
+		if (index == gapBegin) buffer[gapBegin++] = c;
+		else {
+			moveGap(index - gapBegin);
+			assert index == gapBegin;
+			buffer[gapBegin++] = c;
+		}
+	}
+
+	@Override
+	public void delete(int index) {
+		if (index == gapBegin) gapBegin--;
+		else {
+			moveGap(index - gapBegin);
+			assert index == gapBegin;
+			gapBegin--;
+		}
+	}
 	private void moveGap(int shift) {
 		int afterBegin = gapBegin + shift;
 		int afterEnd = gapEnd + shift;
@@ -51,9 +71,15 @@ public class GapBuffer implements TextSequence {
 	}
 
 	private void ensureLength(int length) {
-		if (length() >= length) return;
-		int delta = length - length();
-		// TODO
+		int bufferLength = buffer.length;
+		if (bufferLength >= length) return;
+		int newLength = Math.max(bufferLength * 3 / 2, length);
+		char[] newBuffer = new char[newLength];
+		System.arraycopy(buffer, 0, newBuffer, 0, gapBegin);
+		int newGapEnd = newLength - length() + gapBegin;
+		System.arraycopy(buffer, gapEnd, newBuffer, newGapEnd, bufferLength - gapEnd);
+		gapEnd = newGapEnd;
+		buffer = newBuffer;
 	}
 
 	@Override
