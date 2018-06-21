@@ -11,15 +11,21 @@ Windows|Linux
   [l-l]: https://circleci.com/gh/ice1000/text-sequence.svg?style=svg
   [l-i]: https://circleci.com/gh/ice1000/text-sequence
 
+# Architecture
+
++ Interface class `org.ice1000.textseq.TextSequence` in common
++ Trivial implementations in common
++ Implementations in their own subproject
+
 # Progress
 
 + [X] Trivial implementations (using `ArrayList`, `LinkedList`), say, **the linked list method**
 + [X] `StringBuilder` implementation, say, **the array method**, [DevKt][devkt]
-+ [ ] `GapBuffer` implementation, say, **the gap method**, [Emacs][emacs], [Scintilla][scintilla], [Java Swing][swing]
++ [X] `GapBuffer` implementation, say, **the gap method**, [Emacs][emacs], [Scintilla][scintilla], [Java Swing][swing]
 + [ ] `LineSpan` implementation, say, **the line span method**, [Hemlock][hemlock]
 + [ ] `SizedBuffer` implementation, say, **fixed size buffer**
 + [ ] `PieceTable` implementation, say, **the piece table method**, [VSCode][code], [AbiWord][abiw]
-+ [X] `Rope` (aka Balanced Tree), [Vim][vim]
++ [ ] `Rope` (aka Balanced Tree), [Vim][vim]
 
   [devkt]: https://github.com/ice1000/dev-kt
   [emacs]: https://www.gnu.org/software/emacs/

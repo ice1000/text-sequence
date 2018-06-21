@@ -62,6 +62,7 @@ public class GapBuffer implements TextSequence {
 			gapBegin--;
 		}
 	}
+
 	private void moveGap(int shift) {
 		int afterBegin = gapBegin + shift;
 		int afterEnd = gapEnd + shift;
