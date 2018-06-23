@@ -1,10 +1,21 @@
 package org.ice1000.textseq.impl;
 
+import org.ice1000.textseq.test.TextSequenceTest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class LineSpanTest {
+public class LineSpanTest extends TextSequenceTest {
+	public LineSpanTest() {
+		super(LineSpan::new);
+	}
+
+	@Test
+	@Override
+	public void runAll() {
+		super.runAll();
+	}
+
 	@Test
 	public void simple() {
 		String initial = "# Text Sequence\n" +

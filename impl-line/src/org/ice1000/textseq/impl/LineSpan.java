@@ -22,6 +22,10 @@ public class LineSpan implements TextSequence {
 	private int activeLineNumber, currentLineStart, currentLineEnd;
 	public final char separator;
 
+	public LineSpan() {
+		this("");
+	}
+
 	public LineSpan(@NotNull String initial) {
 		this(initial, '\n');
 	}
@@ -41,9 +45,36 @@ public class LineSpan implements TextSequence {
 		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence line = iterator.next();
-			ret += (i == activeLineNumber ? activeLine : line).length() + 1;
+			ret += (i == activeLineNumber ? activeLine : line).length();
 		}
-		return ret;
+		return ret + i - 1;
+	}
+
+	@Override
+	public void insert(int index, char c) {
+		checkIndex(index);
+		if (activeLine == null || !isIndexInCurrentLine(index)) {
+			switchToLineOfIndex(index);
+			assert activeLine != null;
+		}
+		int indexInCurrentLine = index - currentLineStart;
+		try {
+			activeLine.insert(indexInCurrentLine, c);
+			currentLineEnd++;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void delete(int index) {
+		checkIndex(index);
+		if (activeLine == null || !isIndexInCurrentLine(index)) {
+			switchToLineOfIndex(index);
+			assert activeLine != null;
+		}
+		int indexInCurrentLine = index - currentLineStart;
+		activeLine.delete(indexInCurrentLine);
 	}
 
 	@Override
@@ -68,13 +99,14 @@ public class LineSpan implements TextSequence {
 		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence line = iterator.next();
-			builder.append(i == activeLineNumber ? activeLine : line).append(separator);
+			builder.append(i == activeLineNumber ? activeLine : line);
+			if (i != 0) builder.append(separator);
 		}
 		return builder.toString();
 	}
 
 	@Contract(pure = true)
-	private boolean indexInCurrentLine(int index) {
+	private boolean isIndexInCurrentLine(int index) {
 		return index >= currentLineStart && index <= currentLineEnd;
 	}
 
@@ -87,6 +119,22 @@ public class LineSpan implements TextSequence {
 			if (i == line) {
 				activeLine = new GapBuffer(sequence.toString());
 				activeLineNumber = line;
+				currentLineStart = start;
+				currentLineEnd = start + sequence.length();
+			}
+			start += sequence.length() + 1;
+		}
+	}
+
+	private void switchToLineOfIndex(int index) {
+		if (activeLine != null) lines.set(activeLineNumber, activeLine.toString());
+		int i = 0;
+		int start = 0;
+		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
+			CharSequence sequence = iterator.next();
+			if (index >= start) {
+				activeLine = new GapBuffer(sequence.toString());
+				activeLineNumber = i;
 				currentLineStart = start;
 				currentLineEnd = start + sequence.length();
 			}
