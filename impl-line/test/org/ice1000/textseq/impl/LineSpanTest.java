@@ -17,6 +17,24 @@ public class LineSpanTest extends TextSequenceTest {
 	}
 
 	@Test
+	@Override
+	public void benchmark() {
+		super.benchmark();
+	}
+
+	@Test
+	@Override
+	public void intenseBenchmark() {
+		super.intenseBenchmark();
+	}
+
+	@Test
+	@Override
+	public void realWorldTextEditorBenchmark() {
+		super.realWorldTextEditorBenchmark();
+	}
+
+	@Test
 	public void simple() {
 		String initial = "# Text Sequence\n" +
 				"\n" +

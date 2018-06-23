@@ -16,6 +16,7 @@ import java.util.LinkedList;
  * @author ice1000
  * @since v0.1
  */
+@SuppressWarnings("WeakerAccess")
 public class LineSpan implements TextSequence {
 	private @NotNull LinkedList<CharSequence> lines;
 	private @Nullable GapBuffer activeLine;

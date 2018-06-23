@@ -23,7 +23,7 @@ Windows|Linux
 + [X] Trivial implementations (using `ArrayList`, `LinkedList`), say, **the linked list method**
 + [X] `StringBuilder` implementation, say, **the array method**, [DevKt][devkt]
 + [X] `GapBuffer` implementation, say, **the gap method**, [Emacs][emacs], [Scintilla][scintilla], [Java Swing][swing]
-+ [ ] `LineSpan` implementation, say, **the line span method**, [Hemlock][hemlock]
++ [X] `LineSpan` implementation, say, **the line span method**, [Hemlock][hemlock]
   + The active line is a gap buffer, other lines are simple string, discussed in [this paper][paper1]
 + [ ] `SizedBuffer` implementation, say, **fixed size buffer**
 + [ ] `PieceTable` implementation, say, **the piece table method**, [VSCode][code], [AbiWord][abiw]
