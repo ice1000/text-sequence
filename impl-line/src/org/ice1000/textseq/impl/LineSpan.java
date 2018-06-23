@@ -1,6 +1,7 @@
 package org.ice1000.textseq.impl;
 
 import org.ice1000.textseq.TextSequence;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +19,7 @@ import java.util.LinkedList;
 public class LineSpan implements TextSequence {
 	private @NotNull LinkedList<CharSequence> lines;
 	private @Nullable GapBuffer activeLine;
-	private int activeLineNumber;
+	private int activeLineNumber, currentLineStart, currentLineEnd;
 	public final char separator;
 
 	public LineSpan(@NotNull String initial) {
@@ -28,6 +29,8 @@ public class LineSpan implements TextSequence {
 	public LineSpan(@NotNull String initial, char separator) {
 		lines = new LinkedList<>(Arrays.asList(initial.split(String.valueOf(separator))));
 		this.separator = separator;
+		this.currentLineStart = 0;
+		this.currentLineEnd = 0;
 		if (!initial.isEmpty()) switchToLine(0);
 	}
 
@@ -70,9 +73,24 @@ public class LineSpan implements TextSequence {
 		return builder.toString();
 	}
 
+	@Contract(pure = true)
+	private boolean indexInCurrentLine(int index) {
+		return index >= currentLineStart && index <= currentLineEnd;
+	}
+
 	private void switchToLine(int line) {
 		if (activeLine != null) lines.set(activeLineNumber, activeLine.toString());
-		activeLine = new GapBuffer(lines.get(line).toString());
-		activeLineNumber = line;
+		int i = 0;
+		int start = 0;
+		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
+			CharSequence sequence = iterator.next();
+			if (i == line) {
+				activeLine = new GapBuffer(sequence.toString());
+				activeLineNumber = line;
+				currentLineStart = start;
+				currentLineEnd = start + sequence.length();
+			}
+			start += sequence.length() + 1;
+		}
 	}
 }
