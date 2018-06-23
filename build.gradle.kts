@@ -5,23 +5,20 @@ plugins {
 	`maven-publish`
 	kotlin("jvm") version "1.2.50" apply false
 	id("com.jfrog.bintray") version "1.7.3"
-	id("de.undercouch.download") version "3.4.2" apply false
-	id("org.sonarqube") version "2.6.2"
 }
 
 var isCI: Boolean by extra
 isCI = !System.getenv("CI").isNullOrBlank()
 
 allprojects {
-	group = "org.ice1000.jimgui"
-	version = "v0.4-3"
+	group = "org.ice1000.textseq"
+	version = "v0.1"
 
 	apply { plugin("java") }
 
 	repositories {
 		mavenCentral()
 		jcenter()
-		maven("https://jitpack.io")
 	}
 
 	tasks.withType<JavaCompile> {
@@ -58,13 +55,13 @@ subprojects {
 		pkg.apply {
 			name = rootProject.name
 			repo = "ice1000"
-			githubRepo = "ice1000/jimgui"
+			githubRepo = "ice1000/text-sequence"
 			publicDownloadNumbers = true
-			vcsUrl = "https://github.com/ice1000/jimgui.git"
+			vcsUrl = "https://github.com/ice1000/text-sequence.git"
 			version.apply {
 				vcsTag = "${project.version}"
 				name = vcsTag
-				websiteUrl = "https://github.com/ice1000/jimgui/releases/tag/$vcsTag"
+				websiteUrl = "https://github.com/ice1000/text-sequence/releases/tag/$vcsTag"
 			}
 		}
 	}
@@ -79,9 +76,9 @@ subprojects {
 				artifact(tasks["sourcesJar"])
 				pom.withXml {
 					val root = asNode()
-					root.appendNode("description", "Pure Java binding for dear-imgui")
+					root.appendNode("description", "Text sequence data structures")
 					root.appendNode("name", project.name)
-					root.appendNode("url", "https://github.com/ice1000/jimgui")
+					root.appendNode("url", "https://github.com/ice1000/text-sequence")
 					root.children().last()
 				}
 			}
