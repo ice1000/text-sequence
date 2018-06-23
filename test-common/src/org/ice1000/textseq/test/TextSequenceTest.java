@@ -90,7 +90,7 @@ public class TextSequenceTest {
 			sequence.insert(index, text);
 			if (random.nextInt(100) < 2) index = 0;
 		}
-		System.out.println("Insertion: " + (System.currentTimeMillis() - start));
+		System.out.println("Insertion: " + (System.currentTimeMillis() - start) + ", final length: " + sequence.length());
 		start = System.currentTimeMillis();
 		int length = sequence.length();
 		for (int i = 0, index = random.nextInt(length); i < loopCount; i++) {

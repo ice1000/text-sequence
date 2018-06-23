@@ -83,6 +83,27 @@ public class GapBuffer implements TextSequence {
 		}
 	}
 
+//	@Override
+//	public void delete(int begin, int end) {
+//		checkIndex(begin);
+//		checkIndex(end);
+//		int actualEnd = end + gapLength();
+//		if (begin == gapBegin) {
+//			this.gapEnd = actualEnd;
+//		} else if (actualEnd == this.gapEnd) {
+//			this.gapBegin = begin;
+//		} else {
+//			moveGap(begin - gapBegin);
+//			assert begin == gapBegin;
+//			if (gapBegin == 0) {
+//				this.gapEnd += end;
+//			} else {
+//				// gapBegin == 0 == begin
+//				gapBegin = end;
+//			}
+//		}
+//	}
+
 	private void moveGap(int shift) {
 		if (shift == 0) return;
 		int afterBegin = gapBegin + shift;
