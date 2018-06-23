@@ -21,6 +21,7 @@ public class TextSequenceTest {
 		test1();
 		test2();
 		test3();
+		test4();
 	}
 
 	public void test0() {
@@ -54,6 +55,15 @@ public class TextSequenceTest {
 		assertEquals("bc", characters.toString());
 		characters.delete(0);
 		assertEquals('c', characters.charAt(0));
+	}
+
+	public void test4() {
+		TextSequence characters = sequenceSupplier.get();
+		characters.append("abc");
+		characters.delete(2);
+		assertEquals("ab", characters.toString());
+		characters.delete(1);
+		assertEquals('a', characters.charAt(0));
 	}
 
 	public void benchmark() {
