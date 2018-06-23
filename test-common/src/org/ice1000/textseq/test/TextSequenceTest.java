@@ -2,6 +2,7 @@ package org.ice1000.textseq.test;
 
 import org.ice1000.textseq.TextSequence;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.Random;
 import java.util.function.Supplier;
@@ -9,13 +10,16 @@ import java.util.function.Supplier;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("WeakerAccess")
+@TestOnly
 public class TextSequenceTest {
+	@TestOnly
 	public TextSequenceTest(@NotNull Supplier<@NotNull TextSequence> sequenceSupplier) {
 		this.sequenceSupplier = sequenceSupplier;
 	}
 
 	private @NotNull Supplier<@NotNull TextSequence> sequenceSupplier;
 
+	@TestOnly
 	public void runAll() {
 		test0();
 		test1();
@@ -24,6 +28,7 @@ public class TextSequenceTest {
 		test4();
 	}
 
+	@TestOnly
 	public void test0() {
 		TextSequence characters = sequenceSupplier.get();
 		String s = "reiuji utsuho";
@@ -32,6 +37,7 @@ public class TextSequenceTest {
 		assertEquals(s.substring(3, 7), characters.subSequence(3, 7).toString());
 	}
 
+	@TestOnly
 	public void test1() {
 		TextSequence characters = sequenceSupplier.get();
 		characters.append('a');
@@ -41,6 +47,7 @@ public class TextSequenceTest {
 		assertEquals('a', characters.charAt(0));
 	}
 
+	@TestOnly
 	public void test2() {
 		TextSequence characters = sequenceSupplier.get();
 		characters.append("abc");
@@ -48,6 +55,7 @@ public class TextSequenceTest {
 		assertEquals('a', characters.charAt(0));
 	}
 
+	@TestOnly
 	public void test3() {
 		TextSequence characters = sequenceSupplier.get();
 		characters.append("abc");
@@ -57,6 +65,7 @@ public class TextSequenceTest {
 		assertEquals('c', characters.charAt(0));
 	}
 
+	@TestOnly
 	public void test4() {
 		TextSequence characters = sequenceSupplier.get();
 		characters.append("abc");
@@ -66,18 +75,22 @@ public class TextSequenceTest {
 		assertEquals('a', characters.charAt(0));
 	}
 
+	@TestOnly
 	public void benchmark() {
 		benchmark(3000);
 	}
 
+	@TestOnly
 	public void intenseBenchmark() {
 		benchmark(15000);
 	}
 
+	@TestOnly
 	public void realWorldTextEditorBenchmark() {
 		realWorldTextEditorBenchmark(15000);
 	}
 
+	@TestOnly
 	public void realWorldTextEditorBenchmark(int loopCount) {
 		TextSequence sequence = sequenceSupplier.get();
 		sequence.insert(0, "init");
@@ -101,6 +114,7 @@ public class TextSequenceTest {
 		System.out.println("Deletion: " + (System.currentTimeMillis() - start));
 	}
 
+	@TestOnly
 	public void benchmark(int loopCount) {
 		TextSequence sequence = sequenceSupplier.get();
 		sequence.insert(0, "init");

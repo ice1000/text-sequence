@@ -24,6 +24,12 @@ public class GapBuffer implements TextSequence {
 		this(new char[32]);
 	}
 
+	public GapBuffer(@NotNull String initial) {
+		this.buffer = initial.toCharArray();
+		this.gapBegin = initial.length();
+		this.gapEnd = initial.length();
+	}
+
 	@Override
 	public int length() {
 		return buffer.length - gapLength();
