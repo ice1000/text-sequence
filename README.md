@@ -1,11 +1,12 @@
 # Text Sequence
 
-Paper: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.48.1265&rep=rep1&type=pdf
+[Read this paper][paper0]
 
 Windows|Linux
 :---:|:---:
 [![AV][w-l]][w-i]|[![CircleCI][l-l]][l-i]
 
+  [paper0]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.48.1265&rep=rep1&type=pdf
   [w-l]: https://ci.appveyor.com/api/projects/status/rfk89093smhsv5rf?svg=true
   [w-i]: https://ci.appveyor.com/project/ice1000/text-sequence
   [l-l]: https://circleci.com/gh/ice1000/text-sequence.svg?style=svg
@@ -23,6 +24,7 @@ Windows|Linux
 + [X] `StringBuilder` implementation, say, **the array method**, [DevKt][devkt]
 + [X] `GapBuffer` implementation, say, **the gap method**, [Emacs][emacs], [Scintilla][scintilla], [Java Swing][swing]
 + [ ] `LineSpan` implementation, say, **the line span method**, [Hemlock][hemlock]
+  + The active line is a gap buffer, other lines are simple string, discussed in [this paper][paper1]
 + [ ] `SizedBuffer` implementation, say, **fixed size buffer**
 + [ ] `PieceTable` implementation, say, **the piece table method**, [VSCode][code], [AbiWord][abiw]
 + [ ] `Rope` (aka Balanced Tree), [Vim][vim]
@@ -35,3 +37,4 @@ Windows|Linux
   [code]: https://code.visualstudio.com/
   [abiw]: https://www.abisource.com/
   [vim]: https://www.vim.org/
+  [paper1]: https://www.common-lisp.net/project/flexichain/download/StrandhVilleneuveMoore.pdf
