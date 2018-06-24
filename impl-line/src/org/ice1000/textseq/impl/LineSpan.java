@@ -48,7 +48,7 @@ public class LineSpan implements TextSequence {
 			CharSequence line = iterator.next();
 			ret += (i == activeLineNumber ? activeLine : line).length();
 		}
-		return ret + i - 1;
+		return ret + i;
 	}
 
 	@Override
@@ -99,11 +99,11 @@ public class LineSpan implements TextSequence {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
+			if (i != 0) builder.append(separator);
 			CharSequence line = iterator.next();
 			builder.append(i == activeLineNumber ? activeLine : line);
-			if (i != 0) builder.append(separator);
 		}
-		return builder.toString();
+		return builder.append(separator).toString();
 	}
 
 	@Contract(pure = true)
