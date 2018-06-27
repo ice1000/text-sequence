@@ -81,8 +81,14 @@ public class LineSpan implements TextSequence {
 			switchToLineOfIndex(index);
 			assert activeLine != null;
 		}
-		int indexInCurrentLine = index - currentLineStart;
-		activeLine.delete(indexInCurrentLine);
+		if (index == currentLineEnd) {
+			int newLineNumber = activeLineNumber + 1;
+			CharSequence sequence = lines.get(newLineNumber);
+			lines.remove(newLineNumber);
+			activeLine.append(sequence);
+		} else {
+			activeLine.delete(index - currentLineStart);
+		}
 	}
 
 	@Override
@@ -90,8 +96,10 @@ public class LineSpan implements TextSequence {
 		if (activeLine == null) throw new StringIndexOutOfBoundsException("Cannot call `charAt` on an empty string.");
 		checkIndex(index);
 		int currentLength = 0;
-		for (int i = 0; i < lines.size(); i++) {
-			CharSequence line = i == activeLineNumber ? activeLine : lines.get(i);
+		int i = 0;
+		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
+			CharSequence next = iterator.next();
+			CharSequence line = i == activeLineNumber ? activeLine : next;
 			int currentEnd = currentLength + line.length();
 			if (index < currentEnd && index >= currentLength) return line.charAt(index - currentLength);
 			if (index == currentEnd) return separator;
@@ -145,8 +153,8 @@ public class LineSpan implements TextSequence {
 
 	private void switchToLineOfIndex(int index) {
 		if (activeLine != null) lines.set(activeLineNumber, activeLine.toString());
-		int i = 0;
 		int start = 0;
+		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence sequence = iterator.next();
 			start += sequence.length();
@@ -155,6 +163,7 @@ public class LineSpan implements TextSequence {
 				activeLineNumber = i;
 				currentLineStart = start;
 				currentLineEnd = start + sequence.length();
+				break;
 			}
 			start++;
 		}
