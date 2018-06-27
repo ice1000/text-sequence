@@ -58,12 +58,14 @@ public class LineSpan implements TextSequence {
 			switchToLineOfIndex(index);
 			assert activeLine != null;
 		}
-		int indexInCurrentLine = index - currentLineStart;
-		try {
+		if (c == separator) {
+			int newLineNumber = activeLineNumber + 1;
+			lines.add(newLineNumber, "");
+			switchToLine(newLineNumber);
+		} else {
+			int indexInCurrentLine = index - currentLineStart;
 			activeLine.insert(indexInCurrentLine, c);
 			currentLineEnd++;
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -109,6 +111,15 @@ public class LineSpan implements TextSequence {
 	@Contract(pure = true)
 	private boolean isIndexInCurrentLine(int index) {
 		return index >= currentLineStart && index <= currentLineEnd;
+	}
+
+	public int lineCount() {
+		return lines.size();
+	}
+
+	public @NotNull CharSequence lineAt(int index) {
+		if (activeLine != null && index == activeLineNumber) return activeLine;
+		return lines.get(index);
 	}
 
 	private void switchToLine(int line) {
