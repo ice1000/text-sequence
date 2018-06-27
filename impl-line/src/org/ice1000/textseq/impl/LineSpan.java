@@ -22,6 +22,7 @@ public class LineSpan implements TextSequence {
 	private @Nullable GapBuffer activeLine;
 	private int activeLineNumber, currentLineStart, currentLineEnd;
 	public final char separator;
+	private int length;
 
 	public LineSpan() {
 		this("");
@@ -32,39 +33,42 @@ public class LineSpan implements TextSequence {
 	}
 
 	public LineSpan(@NotNull String initial, char separator) {
-		lines = new LinkedList<>(Arrays.asList(initial.split(String.valueOf(separator))));
+		lines = new LinkedList<>(Arrays.asList(initial.split(String.valueOf(separator), -1)));
 		this.separator = separator;
 		this.currentLineStart = 0;
 		this.currentLineEnd = 0;
+		this.length = initial.length();
 		if (!initial.isEmpty()) switchToLine(0);
 	}
 
 	@Override
 	public int length() {
-		if (activeLine == null) return 0;
-		int ret = 0;
-		int i = 0;
-		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
-			CharSequence line = iterator.next();
-			ret += (i == activeLineNumber ? activeLine : line).length();
-		}
-		return ret + i;
+		return length;
 	}
 
 	@Override
 	public void insert(int index, char c) {
 		checkIndex(index);
+		length++;
 		if (activeLine == null || !isIndexInCurrentLine(index)) {
 			switchToLineOfIndex(index);
 			assert activeLine != null;
 		}
+		int indexInCurrentLine = index - currentLineStart;
 		if (c == separator) {
 			int newLineNumber = activeLineNumber + 1;
-			lines.add(newLineNumber, "");
+			TextSequence first = activeLine.subSequence(0, indexInCurrentLine);
+			TextSequence second = activeLine.subSequence(indexInCurrentLine, activeLine.length());
+			activeLine = null;
+			lines.set(activeLineNumber, first);
+			lines.set(newLineNumber, second);
 			switchToLine(newLineNumber);
 		} else {
-			int indexInCurrentLine = index - currentLineStart;
-			activeLine.insert(indexInCurrentLine, c);
+			try {
+				activeLine.insert(indexInCurrentLine, c);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			currentLineEnd++;
 		}
 	}
@@ -72,6 +76,7 @@ public class LineSpan implements TextSequence {
 	@Override
 	public void delete(int index) {
 		checkIndex(index);
+		length--;
 		if (activeLine == null || !isIndexInCurrentLine(index)) {
 			switchToLineOfIndex(index);
 			assert activeLine != null;
@@ -105,7 +110,7 @@ public class LineSpan implements TextSequence {
 			CharSequence line = iterator.next();
 			builder.append(i == activeLineNumber ? activeLine : line);
 		}
-		return builder.append(separator).toString();
+		return builder.toString();
 	}
 
 	@Contract(pure = true)
@@ -144,13 +149,14 @@ public class LineSpan implements TextSequence {
 		int start = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence sequence = iterator.next();
-			if (index >= start) {
+			start += sequence.length();
+			if (index <= start) {
 				activeLine = new GapBuffer(sequence.toString());
 				activeLineNumber = i;
 				currentLineStart = start;
 				currentLineEnd = start + sequence.length();
 			}
-			start += sequence.length() + 1;
+			start++;
 		}
 	}
 }
