@@ -47,5 +47,8 @@ jobs:
       - store_artifacts:
           path: impl-gap/build/libs
 
+      - store_artifacts:
+          path: impl-line/build/libs
+
       # run tests!
       - run: gradle test

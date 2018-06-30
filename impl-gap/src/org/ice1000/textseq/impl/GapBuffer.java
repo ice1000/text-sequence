@@ -76,15 +76,16 @@ public class GapBuffer implements TextSequence {
 	@Override
 	public void delete(int index) {
 		checkIndex(index);
+		int size = length();
 		if (index == gapBegin) {
-			if (gapBegin == 0) gapEnd++;
-			else gapBegin--;
+			if (index == size) gapBegin--;
+			else gapEnd++;
 		} else if (index == gapBegin - 1) {
 			gapBegin--;
 		} else {
 			moveGap(index - gapBegin);
 			assert index == gapBegin;
-			if (gapBegin != 0) gapBegin--;
+			if (index == size) gapBegin--;
 			else gapEnd++;
 		}
 	}
