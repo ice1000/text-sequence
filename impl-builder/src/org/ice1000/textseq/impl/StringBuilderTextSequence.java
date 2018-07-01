@@ -55,6 +55,11 @@ public class StringBuilderTextSequence implements TextSequence {
 	}
 
 	@Override
+	public void set(int index, char newValue) {
+		impl.setCharAt(index, newValue);
+	}
+
+	@Override
 	public @NotNull String toString() {
 		return impl.toString();
 	}

@@ -38,9 +38,7 @@ public class GapBuffer implements TextSequence {
 	@Override
 	public char charAt(int index) {
 		checkIndex(index);
-		if (index < gapBegin)
-			return buffer[index];
-		else return buffer[index + gapLength()];
+		return buffer[index < gapBegin ? index : index + gapLength()];
 	}
 
 	@Contract(pure = true)
@@ -71,6 +69,12 @@ public class GapBuffer implements TextSequence {
 			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
 		}
 		gapBegin += length;
+	}
+
+	@Override
+	public void set(int index, char newValue) {
+		checkIndex(index);
+		buffer[index < gapBegin ? index : index + gapLength()] = newValue;
 	}
 
 	@Override
