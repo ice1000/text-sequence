@@ -2,9 +2,9 @@
 
 [Read this paper][paper0]
 
-Windows|Linux|Coverage
- :---: |:---:| :---:
-[![][w-l]][w-i]|[![][l-l]][l-i]|[![][c-i]][c-l]
+Windows|Linux|Coverage|Bintray
+ :---: |:---:| :---:  | :---:
+[![][w-l]][w-i]|[![][l-l]][l-i]|[![][c-i]][c-l]|[![][b-i]][b-l]
 
   [paper0]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.48.1265&rep=rep1&type=pdf
   [w-l]: https://ci.appveyor.com/api/projects/status/rfk89093smhsv5rf?svg=true
@@ -13,6 +13,8 @@ Windows|Linux|Coverage
   [l-i]: https://circleci.com/gh/ice1000/text-sequence
   [c-l]: https://codecov.io/gh/ice1000/text-sequence
   [c-i]: https://codecov.io/gh/ice1000/text-sequence/branch/master/graph/badge.svg
+  [b-l]: https://bintray.com/ice1000/ice1000/text-sequence
+  [b-i]: https://img.shields.io/bintray/v/ice1000/ice1000/text-sequence.svg
 
 # Architecture
 
@@ -24,13 +26,14 @@ Windows|Linux|Coverage
 # Build
 
 ```groovy
+repositories { jcenter() }
 dependencies {
   String textseq_version = "v0.1"
   compile "org.ice1000.textseq:gap-list:$textseq_version" // standalone GapList impl
   compile "org.ice1000.textseq:common:$textseq_version" // common + trivial impl
   compile "org.ice1000.textseq:impl-builder:$textseq_version" // array method, depends on common
   compile "org.ice1000.textseq:impl-gap:$textseq_version" // gap method, depends on common
-  compile "org.ice1000.textseq:impl-line:$textseq_version" // line span method, depends on common
+  compile "org.ice1000.textseq:impl-line:$textseq_version" // line span method, depends on impl-gap
 }
 ```
 
