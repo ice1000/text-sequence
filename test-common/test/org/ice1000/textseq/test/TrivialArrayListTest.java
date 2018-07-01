@@ -11,6 +11,7 @@ public class TrivialArrayListTest extends TextSequenceTest {
 	@Test
 	@Override
 	public void runAll() {
+		new ArrayListTextSequence(233);
 		super.runAll();
 	}
 

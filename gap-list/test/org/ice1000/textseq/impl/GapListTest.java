@@ -21,6 +21,12 @@ public class GapListTest extends TestCase {
 			list.add(String.valueOf(i));
 	}
 
+	@Override
+	protected void tearDown() throws Exception {
+		System.out.println(list);
+		super.tearDown();
+	}
+
 	// All tests have method names beginning with "test":
 	public void testInsert() {
 		assertEquals(SIZE, list.size());

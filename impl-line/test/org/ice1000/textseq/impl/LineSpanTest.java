@@ -6,6 +6,15 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class LineSpanTest extends TextSequenceTest {
+	public static final String firstLine = "# Text Sequence\n";
+	public static final String initial = firstLine +
+			"\n" +
+			"[Read this paper][paper0]\n" +
+			"\n" +
+			"Windows|Linux\n" +
+			":---:|:---:\n" +
+			"[![AV][w-l]][w-i]|[![CircleCI][l-l]][l-i]\n";
+
 	public LineSpanTest() {
 		super(LineSpan::new);
 	}
@@ -36,14 +45,6 @@ public class LineSpanTest extends TextSequenceTest {
 
 	@Test
 	public void simple() {
-		String firstLine = "# Text Sequence\n";
-		String initial = firstLine +
-				"\n" +
-				"[Read this paper][paper0]\n" +
-				"\n" +
-				"Windows|Linux\n" +
-				":---:|:---:\n" +
-				"[![AV][w-l]][w-i]|[![CircleCI][l-l]][l-i]\n";
 		LineSpan lineSpan = new LineSpan(initial);
 		assertEquals(initial, lineSpan.toString());
 		assertEquals(initial.length(), lineSpan.length());
@@ -55,5 +56,12 @@ public class LineSpanTest extends TextSequenceTest {
 		// side effect
 		lineSpan.delete(firstLine.length());
 		assertEquals(new StringBuilder(initial).deleteCharAt(firstLine.length()).toString(), lineSpan.toString());
+	}
+
+	@Test
+	public void lines() {
+		LineSpan lineSpan = new LineSpan(initial);
+		assertEquals(8, lineSpan.lineCount());
+		assertEquals(firstLine.trim(), lineSpan.lineAt(0).toString());
 	}
 }

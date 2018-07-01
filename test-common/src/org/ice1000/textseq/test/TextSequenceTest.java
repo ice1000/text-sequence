@@ -26,6 +26,7 @@ public class TextSequenceTest {
 		test2();
 		test3();
 		test4();
+		test5();
 	}
 
 	@TestOnly
@@ -73,6 +74,16 @@ public class TextSequenceTest {
 		assertEquals("ab", characters.toString());
 		characters.delete(1);
 		assertEquals('a', characters.charAt(0));
+	}
+
+	@TestOnly
+	public void test5() {
+		TextSequence characters = sequenceSupplier.get();
+		characters.append("abc");
+		characters.set(2, 'd');
+		assertEquals("abd", characters.toString());
+		characters.set(1, 'a');
+		assertEquals('a', characters.charAt(1));
 	}
 
 	@TestOnly

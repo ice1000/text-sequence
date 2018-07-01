@@ -48,6 +48,11 @@ public interface TextSequence extends CharSequence {
 		insert(length(), sequence);
 	}
 
+	default void set(int index, char newValue) {
+		delete(index);
+		insert(index, newValue);
+	}
+
 	default void checkIndex(int index) throws StringIndexOutOfBoundsException {
 		if (index < 0) throw new StringIndexOutOfBoundsException("Negative number " + index);
 		int length = length();

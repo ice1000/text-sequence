@@ -32,4 +32,8 @@ public interface ListTextSequence extends List<Character>, TextSequence {
 		remove(index);
 	}
 
+	@Override
+	default void set(int index, char newValue) {
+		set(index, (Character) newValue);
+	}
 }
