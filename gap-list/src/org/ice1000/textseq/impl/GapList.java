@@ -14,18 +14,16 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	private Object[] buffer;
 	private int gapBegin, gapEnd;
 
-	public GapList(T... buffer) {
+	private GapList(Object[] buffer, int gapBegin, int gapEnd) {
 		this.buffer = buffer;
-		this.gapBegin = 0;
-		this.gapEnd = buffer.length;
+		this.gapBegin = gapBegin;
+		this.gapEnd = gapEnd;
 	}
 
-	@SuppressWarnings("unchecked")
 	public GapList(int initialCapacity) {
-		this((T[]) new Object[initialCapacity]);
+		this(new Object[initialCapacity], 0, initialCapacity);
 	}
 
-	@SuppressWarnings("unchecked")
 	public GapList() {
 		this(32);
 	}
@@ -145,6 +143,19 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 		return builder.toString();
 	}
 
+	@Override
+	@SuppressWarnings("MethodDoesntCallSuperMethod")
+	public GapList<T> clone() {
+		return new GapList<>(Arrays.copyOf(buffer, buffer.length), gapBegin, gapEnd);
+	}
+
+	@Override
+	public Object[] toArray() {
+		Object[] ret = new Object[size()];
+		System.arraycopy(buffer, 0, ret, 0, gapBegin);
+		System.arraycopy(buffer, gapEnd, ret, gapBegin, buffer.length - gapEnd);
+		return ret;
+	}
 
 	/**
 	 * Checks if the given index is in range.  If not, throws an appropriate
