@@ -38,6 +38,8 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
 
+      - run: gradle assemble --info --no-daemon
+
       - store_artifacts:
           path: common/build/libs
 
