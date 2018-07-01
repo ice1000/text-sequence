@@ -36,13 +36,6 @@ allprojects {
 		}
 	}
 
-	tasks.withType<JacocoReport> {
-		reports {
-			xml.isEnabled = true
-			html.isEnabled = false
-		}
-	}
-
 	val sourcesJar = task<Jar>("sourcesJar") {
 		group = tasks["jar"].group
 		from(java.sourceSets["main"].allSource)
@@ -107,5 +100,16 @@ task<JacocoReport>("codecov") {
 		csv.isEnabled = false
 	}
 	onlyIf { true }
+	doFirst {
+		subprojects.filter { it.pluginManager.hasPlugin("java") }.forEach { subproject ->
+			additionalSourceDirs(files(subproject.java.sourceSets["main"].allJava.srcDirs as Set<File>))
+			additionalClassDirs(subproject.java.sourceSets["main"].output as FileCollection)
+			if (subproject.pluginManager.hasPlugin("jacoco")) {
+				val jacocoTestReport: JacocoReport by subproject.tasks
+				executionData(jacocoTestReport.executionData)
+			}
+		}
+		executionData = files(executionData.filter { it.exists() })
+	}
 	dependsOn(*subprojects.map { it.tasks["test"] }.toTypedArray())
 }
