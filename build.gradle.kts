@@ -36,6 +36,13 @@ allprojects {
 		}
 	}
 
+	tasks.withType<JacocoReport> {
+		reports {
+			xml.isEnabled = true
+			html.isEnabled = false
+		}
+	}
+
 	val sourcesJar = task<Jar>("sourcesJar") {
 		group = tasks["jar"].group
 		from(java.sourceSets["main"].allSource)
@@ -99,5 +106,6 @@ task<JacocoReport>("codecov") {
 		html.isEnabled = false
 		csv.isEnabled = false
 	}
+	onlyIf { true }
 	dependsOn(*subprojects.map { it.tasks["test"] }.toTypedArray())
 }

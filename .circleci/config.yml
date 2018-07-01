@@ -27,7 +27,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-{{ checksum "build.gradle.kts" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -36,7 +36,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+          key: v1-dependencies-{{ checksum "build.gradle.kts" }}
 
       - store_artifacts:
           path: common/build/libs
@@ -49,6 +49,9 @@ jobs:
 
       - store_artifacts:
           path: impl-line/build/libs
+
+      - store_artifacts:
+          path: gap-list/build/libs
 
       # run tests!
       - run: gradle codecov --info --no-daemon
