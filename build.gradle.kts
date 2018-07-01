@@ -1,5 +1,10 @@
 import com.jfrog.bintray.gradle.*
 
+buildscript {
+	repositories { jcenter() }
+	dependencies { classpath("com.palantir:jacoco-coverage:0.4.0") }
+}
+
 plugins {
 	java
 	jacoco
@@ -18,6 +23,7 @@ allprojects {
 	apply {
 		plugin("java")
 		plugin("jacoco")
+		plugin("com.palantir.jacoco-full-report")
 	}
 
 	repositories {
@@ -88,28 +94,4 @@ subprojects {
 			}
 		}
 	}
-}
-
-task<JacocoReport>("codecov") {
-	executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
-	subprojects.forEach { sourceSets(it.java.sourceSets["main"]) }
-	reports {
-		xml.isEnabled = true
-		xml.destination = file("$buildDir/reports/jacoco/report.xml")
-		html.isEnabled = false
-		csv.isEnabled = false
-	}
-	onlyIf { true }
-	doFirst {
-		subprojects.filter { it.pluginManager.hasPlugin("java") }.forEach { subproject ->
-			additionalSourceDirs(files(subproject.java.sourceSets["main"].allJava.srcDirs as Set<File>))
-			additionalClassDirs(subproject.java.sourceSets["main"].output as FileCollection)
-			if (subproject.pluginManager.hasPlugin("jacoco")) {
-				val jacocoTestReport: JacocoReport by subproject.tasks
-				executionData(jacocoTestReport.executionData)
-			}
-		}
-		executionData = files(executionData.filter { it.exists() })
-	}
-	dependsOn(*subprojects.map { it.tasks["test"] }.toTypedArray())
 }

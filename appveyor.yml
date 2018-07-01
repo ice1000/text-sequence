@@ -3,7 +3,7 @@ environment:
 #
 
 build_script:
-  - gradlew check --info --no-daemon
+  - gradlew build --info --no-daemon
 
 artifacts:
   - path: 'common\build\libs\*.jar'
