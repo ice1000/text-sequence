@@ -3,8 +3,8 @@
 [Read this paper][paper0]
 
 Windows|Linux|Coverage
-:---:|:---:|:---:
-[![AV][w-l]][w-i]|[![CircleCI][l-l]][l-i]|[![codecov][c-i]][c-l]
+ :---: |:---:| :---:
+[![][w-l]][w-i]|[![][l-l]][l-i]|[![][c-i]][c-l]
 
   [paper0]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.48.1265&rep=rep1&type=pdf
   [w-l]: https://ci.appveyor.com/api/projects/status/rfk89093smhsv5rf?svg=true
@@ -20,6 +20,19 @@ Windows|Linux|Coverage
 + Trivial implementations in common
 + Implementations in their own subproject
 + Standalone `GapList<T>` (with no dependencies) that uses a gap buffer to maintain elements, which is more efficient than `ArrayList<T>`.
+
+# Build
+
+```groovy
+dependencies {
+  String textseq_version = "v0.1"
+  compile "org.ice1000.textseq:gap-list:$textseq_version" // standalone GapList impl
+  compile "org.ice1000.textseq:common:$textseq_version" // common + trivial impl
+  compile "org.ice1000.textseq:impl-builder:$textseq_version" // array method, depends on common
+  compile "org.ice1000.textseq:impl-gap:$textseq_version" // gap method, depends on common
+  compile "org.ice1000.textseq:impl-line:$textseq_version" // line span method, depends on common
+}
+```
 
 # Progress
 

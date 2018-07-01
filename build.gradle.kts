@@ -18,7 +18,7 @@ isCI = !System.getenv("CI").isNullOrBlank()
 
 allprojects {
 	group = "org.ice1000.textseq"
-	version = "v0.1"
+	version = "v0.2"
 
 	apply {
 		plugin("java")
