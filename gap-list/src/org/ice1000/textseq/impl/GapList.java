@@ -37,9 +37,7 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	@Override
 	public T get(int index) {
 		rangeCheck(index);
-		if (index < gapBegin)
-			return (T) buffer[index];
-		else return (T) buffer[index + gapLength()];
+		return (T) buffer[index < gapBegin ? index : index + gapLength()];
 	}
 
 	private int gapLength() {
@@ -59,16 +57,22 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	}
 
 	@Override
+	public boolean add(T t) {
+		add(size(), t);
+		return true;
+	}
+
+	@Override
 	public boolean addAll(int index, Collection<? extends T> sequence) {
 		rangeCheckForAdd(index);
 		Object[] objects = sequence.toArray();
 		ensureLength(size() + objects.length);
 		if (index == gapBegin) {
-			System.arraycopy(objects, 0, buffer, gapBegin + 0, objects.length);
+			System.arraycopy(objects, 0, buffer, gapBegin, objects.length);
 		} else {
 			moveGap(index - gapBegin);
 			assert index == gapBegin;
-			System.arraycopy(objects, 0, buffer, gapBegin + 0, objects.length);
+			System.arraycopy(objects, 0, buffer, gapBegin, objects.length);
 		}
 		gapBegin += objects.length;
 		return true;
@@ -82,10 +86,7 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	@Override
 	public T set(int index, T element) {
 		rangeCheck(index);
-		int actualIndex;
-		if (index <= gapBegin)
-			actualIndex = index;
-		else actualIndex = index + gapLength();
+		int actualIndex = index <= gapBegin ? index : index + gapLength();
 		Object old = buffer[actualIndex];
 		buffer[actualIndex] = element;
 		//noinspection unchecked

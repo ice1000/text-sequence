@@ -17,7 +17,7 @@ public class GapListTest extends TestCase {
 	public GapListTest(String name) {
 		super(name);
 		for (int i = 0; i < 100; i++)
-			list.add("" + i);
+			list.add(String.valueOf(i));
 	}
 
 	// All tests have method names beginning with "test":
