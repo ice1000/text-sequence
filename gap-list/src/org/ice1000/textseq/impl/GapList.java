@@ -61,21 +61,22 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	@Override
 	public boolean addAll(int index, Collection<? extends T> sequence) {
 		rangeCheckForAdd(index);
-		int length = sequence.size();
-		ensureLength(size() + length);
+		Object[] objects = sequence.toArray();
+		ensureLength(size() + objects.length);
 		if (index == gapBegin) {
-			int i = 0;
-			for (Iterator<? extends T> iterator = sequence.iterator(); iterator.hasNext(); i++)
-				buffer[gapBegin + i] = iterator.next();
+			System.arraycopy(objects, 0, buffer, gapBegin + 0, objects.length);
 		} else {
 			moveGap(index - gapBegin);
 			assert index == gapBegin;
-			int i = 0;
-			for (Iterator<? extends T> iterator = sequence.iterator(); iterator.hasNext(); i++)
-				buffer[gapBegin + i] = iterator.next();
+			System.arraycopy(objects, 0, buffer, gapBegin + 0, objects.length);
 		}
-		gapBegin += length;
+		gapBegin += objects.length;
 		return true;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends T> c) {
+		return addAll(size(), c);
 	}
 
 	@Override
@@ -155,6 +156,12 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 		System.arraycopy(buffer, 0, ret, 0, gapBegin);
 		System.arraycopy(buffer, gapEnd, ret, gapBegin, buffer.length - gapEnd);
 		return ret;
+	}
+
+	@Override
+	public void clear() {
+		gapBegin = 0;
+		gapEnd = buffer.length;
 	}
 
 	/**

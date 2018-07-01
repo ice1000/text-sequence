@@ -67,6 +67,12 @@ public class GapListTest extends TestCase {
 				IntStream.range(0, SIZE).mapToObj(String::valueOf).toArray(String[]::new));
 	}
 
+	public void testClear() {
+		System.out.println("Running testClear()");
+		list.clear();
+		assertEquals(0, list.size());
+	}
+
 	public void testIndexOf() {
 		System.out.println("Running testIndexOf()");
 		list.add("Hey");
@@ -95,5 +101,10 @@ public class GapListTest extends TestCase {
 		compare(list,
 				Stream.concat(IntStream.range(0, SIZE).mapToObj(String::valueOf),
 						Stream.of(c.toArray())).toArray(String[]::new));
+		list.addAll(0, c);
+		assertEquals(SIZE + (c.size() << 1), list.size());
+		compare(list,
+				Stream.concat(Stream.of(c.toArray()), Stream.concat(IntStream.range(0, SIZE).mapToObj(String::valueOf),
+						Stream.of(c.toArray()))).toArray(String[]::new));
 	}
 }
