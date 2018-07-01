@@ -52,6 +52,8 @@ allprojects {
 }
 
 subprojects {
+	if (project.name == "test-common") return@subprojects
+
 	apply {
 		plugin("maven")
 		plugin("maven-publish")

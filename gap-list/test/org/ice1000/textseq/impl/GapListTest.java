@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -22,7 +23,6 @@ public class GapListTest extends TestCase {
 
 	// All tests have method names beginning with "test":
 	public void testInsert() {
-		System.out.println("Running testInsert()");
 		assertEquals(SIZE, list.size());
 		list.add(1, "Insert");
 		assertEquals(SIZE + 1, list.size());
@@ -30,7 +30,6 @@ public class GapListTest extends TestCase {
 	}
 
 	public void testReplace() {
-		System.out.println("Running testReplace()");
 		assertEquals(SIZE, list.size());
 		list.set(1, "Replace");
 		assertEquals(100, list.size());
@@ -48,12 +47,10 @@ public class GapListTest extends TestCase {
 	}
 
 	public void testOrder() {
-		System.out.println("Running testOrder()");
 		compare(list, IntStream.range(0, SIZE).mapToObj(String::valueOf).toArray(String[]::new));
 	}
 
 	public void testRemove() {
-		System.out.println("Running testRemove()");
 		assertEquals(SIZE, list.size());
 		list.remove(1);
 		assertEquals(SIZE - 1, list.size());
@@ -62,39 +59,56 @@ public class GapListTest extends TestCase {
 	}
 
 	public void testToArray() {
-		System.out.println("Running testToArray()");
 		assertArrayEquals(list.toArray(),
 				IntStream.range(0, SIZE).mapToObj(String::valueOf).toArray(String[]::new));
 	}
 
 	public void testClear() {
-		System.out.println("Running testClear()");
 		list.clear();
 		assertEquals(0, list.size());
 	}
 
+	public void testClone() {
+		assertEquals(list, list.clone());
+	}
+
 	public void testIndexOf() {
-		System.out.println("Running testIndexOf()");
 		list.add("Hey");
 		assertEquals(SIZE, list.indexOf("Hey"));
 		list.add("Hey"); // second
 		assertEquals(SIZE, list.indexOf("Hey"));
 		assertEquals(0, list.indexOf("0"));
 		assertEquals(2, list.indexOf("2"));
+		list.add(0, "BoyNextDoor");
+		assertEquals(SIZE + 1, list.indexOf("Hey"));
+		assertEquals(-1, list.indexOf("TakeItBoy"));
+	}
+
+	public void testForEach() {
+		AtomicInteger index = new AtomicInteger();
+		list.forEach(s -> assertEquals(String.valueOf(index.getAndIncrement()), s));
+	}
+
+	public void testContains() {
+		assertTrue(list.contains("15"));
+		list.add(5, "233");
+		assertTrue(list.contains("15"));
+		assertFalse(list.contains("114514"));
 	}
 
 	public void testLastIndexOf() {
-		System.out.println("Running testLastIndexOf()");
 		list.add("Hey");
 		assertEquals(SIZE, list.lastIndexOf("Hey"));
 		list.add("Hey"); // second
 		assertEquals(SIZE + 1, list.lastIndexOf("Hey"));
 		assertEquals(0, list.indexOf("0"));
 		assertEquals(2, list.indexOf("2"));
+		list.add(0, "BoyNextDoor");
+		assertEquals(SIZE + 2, list.lastIndexOf("Hey"));
+		assertEquals(-1, list.lastIndexOf("TakeItBoy"));
 	}
 
 	public void testAddAll() {
-		System.out.println("Running testAddAll()");
 		List<String> c = Arrays.asList("An", "African", "Swallow");
 		list.addAll(c);
 		assertEquals(SIZE + c.size(), list.size());
