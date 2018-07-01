@@ -17,6 +17,7 @@ Windows|Linux
 + Interface class `org.ice1000.textseq.TextSequence` in common
 + Trivial implementations in common
 + Implementations in their own subproject
++ Standalone `GapList<T>` (with no dependencies) that uses a gap buffer to maintain elements, which is more efficient than `ArrayList<T>`.
 
 # Progress
 

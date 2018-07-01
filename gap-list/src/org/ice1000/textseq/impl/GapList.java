@@ -1,9 +1,7 @@
 package org.ice1000.textseq.impl;
 
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Standalone implementation as a {@link java.util.List}.
@@ -12,7 +10,7 @@ import java.util.Objects;
  * @since v0.1
  */
 @SuppressWarnings("WeakerAccess")
-public class GapList<T> extends AbstractList<T> {
+public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess {
 	private Object[] buffer;
 	private int gapBegin, gapEnd;
 
@@ -165,6 +163,28 @@ public class GapList<T> extends AbstractList<T> {
 	private void rangeCheckForAdd(int index) {
 		if (index > size() || index < 0)
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+	}
+
+	@SuppressWarnings({"unchecked"})
+	@Override
+	public void forEach(Consumer<? super T> action) {
+		Objects.requireNonNull(action);
+		for (int i = 0; i < gapBegin; i++) action.accept((T) buffer[i]);
+		for (int i = gapEnd; i < buffer.length; i++) action.accept((T) buffer[i]);
+	}
+
+	@Override
+	public int indexOf(Object o) {
+		for (int i = 0; i < gapBegin; i++) if (Objects.equals(o, buffer[i])) return i;
+		for (int i = gapEnd; i < buffer.length; i++) if (Objects.equals(o, buffer[i])) return i - gapLength();
+		return -1;
+	}
+
+	@Override
+	public int lastIndexOf(Object o) {
+		for (int i = buffer.length - 1; i >= gapEnd; i--) if (Objects.equals(o, buffer[i])) return i - gapLength();
+		for (int i = gapBegin - 1; i >= 0; i--) if (Objects.equals(o, buffer[i])) return i;
+		return -1;
 	}
 
 	/**

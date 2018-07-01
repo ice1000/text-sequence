@@ -58,7 +58,6 @@ public class GapListTest extends TestCase {
 		System.out.println("Running testAddAll()");
 		list.addAll(Arrays.asList("An", "African", "Swallow"));
 		assertEquals(list.size(), 6);
-		compare(list,
-				"0", "1", "2", "An", "African", "Swallow");
+		compare(list, "0", "1", "2", "An", "African", "Swallow");
 	}
 }
