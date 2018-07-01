@@ -51,4 +51,7 @@ jobs:
           path: impl-line/build/libs
 
       # run tests!
-      - run: gradle test
+      - run: gradle jacocoTestReport
+
+      # save test results!
+      - run: bash <(curl -s https://codecov.io/bash)

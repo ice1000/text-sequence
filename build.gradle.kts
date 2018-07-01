@@ -2,6 +2,7 @@ import com.jfrog.bintray.gradle.*
 
 plugins {
 	java
+	jacoco
 	`maven-publish`
 	kotlin("jvm") version "1.2.50" apply false
 	id("com.jfrog.bintray") version "1.7.3"
@@ -14,7 +15,10 @@ allprojects {
 	group = "org.ice1000.textseq"
 	version = "v0.1"
 
-	apply { plugin("java") }
+	apply {
+		plugin("java")
+		plugin("jacoco")
+	}
 
 	repositories {
 		mavenCentral()
@@ -29,6 +33,13 @@ allprojects {
 			isWarnings = true
 			isDebug = !isCI
 			compilerArgs.add("-Xlint:unchecked")
+		}
+	}
+
+	tasks.withType<JacocoReport> {
+		reports {
+			xml.isEnabled = true
+			html.isEnabled = false
 		}
 	}
 
