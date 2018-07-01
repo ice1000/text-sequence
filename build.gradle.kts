@@ -36,13 +36,6 @@ allprojects {
 		}
 	}
 
-	tasks.withType<JacocoReport> {
-		reports {
-			xml.isEnabled = true
-			html.isEnabled = false
-		}
-	}
-
 	val sourcesJar = task<Jar>("sourcesJar") {
 		group = tasks["jar"].group
 		from(java.sourceSets["main"].allSource)
@@ -95,4 +88,16 @@ subprojects {
 			}
 		}
 	}
+}
+
+task<JacocoReport>("codecov") {
+	executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
+	subprojects.forEach { sourceSets(it.java.sourceSets["main"]) }
+	reports {
+		xml.isEnabled = true
+		xml.destination = file("$buildDir/reports/jacoco/report.xml")
+		html.isEnabled = false
+		csv.isEnabled = false
+	}
+	dependsOn(*subprojects.map { it.tasks["test"] }.toTypedArray())
 }

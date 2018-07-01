@@ -14,4 +14,6 @@ artifacts:
     name: impl-gap
   - path: 'impl-line\build\libs\*.jar'
     name: impl-line
+  - path: 'gap-list\build\libs\*.jar'
+    name: gap-list
 #
