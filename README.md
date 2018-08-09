@@ -14,7 +14,7 @@ Windows|Linux|Coverage|Bintray
   [c-l]: https://codecov.io/gh/ice1000/text-sequence
   [c-i]: https://codecov.io/gh/ice1000/text-sequence/branch/master/graph/badge.svg
   [b-l]: https://bintray.com/ice1000/ice1000/text-sequence
-  [b-i]: https://img.shields.io/bintray/v/ice1000/ice1000/text-sequence.svg
+  [b-i]: https://img.shields.io/bintray/v/ice1000/ice1000/text-seq.svg
 
 # Architecture
 

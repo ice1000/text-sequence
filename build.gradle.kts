@@ -65,7 +65,7 @@ subprojects {
 		key = findProperty("key").toString()
 		setConfigurations("archives")
 		pkg.apply {
-			name = rootProject.name
+			name = "text-seq"
 			repo = "ice1000"
 			githubRepo = "ice1000/text-sequence"
 			publicDownloadNumbers = true
