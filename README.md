@@ -14,7 +14,7 @@ Windows|Linux|Coverage|Bintray
   [c-l]: https://codecov.io/gh/ice1000/text-sequence
   [c-i]: https://codecov.io/gh/ice1000/text-sequence/branch/master/graph/badge.svg
   [b-l]: https://bintray.com/ice1000/ice1000/text-sequence
-  [b-i]: https://img.shields.io/bintray/v/ice1000/ice1000/text-seq.svg
+  [b-i]: https://img.shields.io/bintray/v/ice1000/ice1000/textseq.svg
 
 # Architecture
 
@@ -22,6 +22,7 @@ Windows|Linux|Coverage|Bintray
 + Trivial implementations in common
 + Implementations in their own subproject
 + Standalone `GapList<T>` (with no dependencies) that uses a gap buffer to maintain elements, which is more efficient than `ArrayList<T>`.
+  + C++ version (C++17 with dependency on `cstddef`, `cassert` and `cstring`)
 
 # Build
 
