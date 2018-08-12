@@ -1,10 +1,11 @@
 package org.ice1000.textseq.impl;
 
 import org.ice1000.textseq.TextSequence;
+import org.ice1000.textseq.TextSequenceBase;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
-public class StringBuilderTextSequence implements TextSequence {
+public class StringBuilderTextSequence extends TextSequenceBase implements TextSequence {
 	private @NotNull StringBuilder impl;
 
 	public StringBuilderTextSequence(@NotNull StringBuilder impl) {

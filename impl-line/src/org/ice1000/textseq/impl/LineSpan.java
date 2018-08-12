@@ -1,6 +1,7 @@
 package org.ice1000.textseq.impl;
 
 import org.ice1000.textseq.TextSequence;
+import org.ice1000.textseq.TextSequenceBase;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,7 @@ import java.util.LinkedList;
  * @since v0.1
  */
 @SuppressWarnings("WeakerAccess")
-public class LineSpan implements TextSequence {
+public class LineSpan extends TextSequenceBase implements TextSequence {
 	private @NotNull LinkedList<CharSequence> lines;
 	private @Nullable GapBuffer activeLine;
 	private int activeLineNumber, currentLineStart, currentLineEnd;

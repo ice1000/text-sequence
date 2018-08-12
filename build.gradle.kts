@@ -9,7 +9,6 @@ plugins {
 	java
 	jacoco
 	`maven-publish`
-	kotlin("jvm") version "1.2.50" apply false
 	id("com.jfrog.bintray") version "1.7.3"
 }
 
@@ -18,7 +17,7 @@ isCI = !System.getenv("CI").isNullOrBlank()
 
 allprojects {
 	group = "org.ice1000.textseq"
-	version = "v0.2"
+	version = "v0.3"
 
 	apply {
 		plugin("java")

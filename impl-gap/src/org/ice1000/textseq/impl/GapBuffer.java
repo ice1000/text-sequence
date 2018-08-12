@@ -1,6 +1,7 @@
 package org.ice1000.textseq.impl;
 
 import org.ice1000.textseq.TextSequence;
+import org.ice1000.textseq.TextSequenceBase;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,14 +11,13 @@ import org.jetbrains.annotations.NotNull;
  * @author ice1000
  * @since v0.1
  */
-public class GapBuffer implements TextSequence {
+public class GapBuffer extends TextSequenceBase implements TextSequence {
 	private char[] buffer;
 	private int gapBegin, gapEnd;
 
 	private GapBuffer(@NotNull char[] buffer) {
 		this.buffer = buffer;
-		this.gapBegin = 0;
-		this.gapEnd = buffer.length;
+		clear();
 	}
 
 	public GapBuffer() {
@@ -33,6 +33,12 @@ public class GapBuffer implements TextSequence {
 	@Override
 	public int length() {
 		return buffer.length - gapLength();
+	}
+
+	@Override
+	public void clear() {
+		this.gapBegin = 0;
+		this.gapEnd = buffer.length;
 	}
 
 	@Override
