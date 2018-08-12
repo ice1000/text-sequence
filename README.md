@@ -29,7 +29,7 @@ Windows|Linux|Coverage|Bintray
 ```groovy
 repositories { jcenter() }
 dependencies {
-  String textseq_version = "v0.1"
+  String textseq_version = "v0.3"
   compile "org.ice1000.textseq:gap-list:$textseq_version" // standalone GapList impl
   compile "org.ice1000.textseq:common:$textseq_version" // common + trivial impl
   compile "org.ice1000.textseq:impl-builder:$textseq_version" // array method, depends on common
