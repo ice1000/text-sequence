@@ -1,6 +1,9 @@
+#pragma once
 #include <cstddef>
 #include <cassert>
 #include <cstring>
+
+#define CharSeq template <typename CharSequence>
 
 /**
  * Standalone implementation as a {@link vector}.
@@ -11,7 +14,7 @@ template<typename T>
 class GapList {
 private:
 	template<typename A, typename B>
-	static constexpr inline auto max(A &&a, B &&b) { return a > b ? a : b; }
+	static inline auto max(A &&a, B &&b) { return a > b ? a : b; }
 
 	T *buffer;
 	size_t bufferLength, gapBegin, gapEnd;
@@ -122,16 +125,6 @@ public:
 		return result;
 	}
 
-	inline auto push_back(const_value_reference c) { insert(size(), c); }
-	inline auto push_front(const_value_reference c) { insert(0, c); }
-	inline auto pop_front() { return erase_at(0); }
-	inline auto pop_back() { return erase_at(size() - 1); }
-	inline auto erase(const_iterator iter) { assert(iter > buffer && iter < buffer + bufferLength); return erase_at(iter - buffer); }
-	inline auto clear() { gapBegin = 0; gapEnd = bufferLength; }
-
-	// for (size_t i = 0; i < gapBegin; i++) action.accept((T) buffer[i]);
-	// for (size_t i = gapEnd; i < buffer.length; i++) action.accept((T) buffer[i]);
-
 	auto find(const_value_reference o) {
 		for (iterator i = buffer, bufferPart = buffer + gapBegin; i < bufferPart; i++) if (o == *i) return i;
 		for (iterator i = buffer + gapEnd, bufferEnd = buffer + bufferLength; i < bufferEnd; i++) if (o == *i) return i;
@@ -144,5 +137,33 @@ public:
 		return nullptr;
 	}
 
-	auto contains(const_value_reference o) { return find(o) != nullptr; }
+	CharSeq auto insert(size_t index, const CharSequence &sequence, size_t sequenceSize) {
+		ensureLength(size() + sequenceSize);
+		if (index == gapBegin) {
+			for (size_t i = 0; i < sequenceSize; i++) buffer[gapBegin + i] = sequence[i];
+		} else {
+			moveGap(index - gapBegin);
+			assert(index == gapBegin);
+			for (size_t i = 0; i < sequenceSize; i++) buffer[gapBegin + i] = sequence[i];
+		}
+		gapBegin += sequenceSize;
+	}
+
+	inline auto push_back(const_value_reference c) { insert(size(), c); }
+	inline auto append(const_value_reference c) { insert(size(), c); }
+	inline auto push_front(const_value_reference c) { insert(0, c); }
+	inline auto pop_front() { return erase_at(0); }
+	inline auto pop_back() { return erase_at(size() - 1); }
+	inline auto erase(const_iterator iter) { assert(iter > buffer && iter < buffer + bufferLength); return erase_at(iter - buffer); }
+	inline auto clear() { gapBegin = 0; gapEnd = bufferLength; }
+	inline auto contains(const_value_reference o) { return find(o) != nullptr; }
+	CharSeq inline auto insert(const CharSequence &sequence, size_t sequenceSize) { insert(size(), sequence, sequenceSize); }
+	CharSeq inline auto append(const CharSequence &sequence, size_t sequenceSize) { insert(size(), sequence, sequenceSize); }
+
+	// for (size_t i = 0; i < gapBegin; i++) action.accept((T) buffer[i]);
+	// for (size_t i = gapEnd; i < buffer.length; i++) action.accept((T) buffer[i]);
 };
+
+#undef CharSeq
+
+using GapBuffer = GapList<char>;
