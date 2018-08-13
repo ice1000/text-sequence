@@ -56,22 +56,25 @@ private:
 		buffer = newBuffer;
 	}
 
-	inline auto rangeCheck(size_t index) { assert(index < size()); }
-	inline auto rangeCheckForAdd(size_t index) { assert(index <= size()); }
-	inline auto gapLength() { return gapEnd - gapBegin; }
+	constexpr inline auto rangeCheck(size_t index) const { assert(index < size()); }
+	constexpr inline auto rangeCheckForAdd(size_t index) const { assert(index <= size()); }
+	constexpr inline auto gapLength() const noexcept { return gapEnd - gapBegin; }
 
 public:
-	GapList(size_t initialCapacity) : GapList(new T[initialCapacity], initialCapacity, 0, initialCapacity) { }
-	GapList() : GapList(32) {}
+	explicit GapList(size_t initialCapacity) : GapList(new T[initialCapacity], initialCapacity, 0, initialCapacity) { }
+	explicit GapList() : GapList(32) {}
 	~GapList() { delete[] buffer; }
 
 	typedef T                 value_type;
 	typedef value_type&       value_reference;
 	typedef value_type const& const_value_reference;
 
-	inline auto size() { return bufferLength - gapLength(); }
-	inline value_type &operator[](size_t index) { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
-	inline const value_type &operator[](size_t index) const { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
+	constexpr inline auto size() const noexcept { return bufferLength - gapLength(); }
+	constexpr inline auto empty() const noexcept { return size() == 0; }
+	constexpr inline auto isEmpty() const noexcept { return empty(); }
+	constexpr inline auto isNotEmpty() const noexcept { return !isEmpty(); }
+	constexpr inline auto &operator[](size_t index) { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
+	constexpr inline auto const &operator[](size_t index) const { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
 
 	template <typename Member>
 	struct GapListIter {
@@ -87,10 +90,10 @@ public:
 	typedef GapListIter<value_reference>       iterator;
 	typedef GapListIter<const_value_reference> const_iterator;
 
-	GapListIter<value_reference> begin() { return {0, this}; }
-	GapListIter<value_reference> end() { return {size(), this}; }
-	GapListIter<const_value_reference> cbegin() const { return {0, this}; }
-	GapListIter<const_value_reference> cend() const { return {size(), this}; }
+	constexpr iterator begin() { return {0, this}; }
+	constexpr iterator end() { return {size(), this}; }
+	constexpr const_iterator cbegin() const { return {0, this}; }
+	constexpr const_iterator cend() const { return {size(), this}; }
 
 	auto insert(size_t index, const_value_reference c) {
 		rangeCheckForAdd(index);
@@ -164,7 +167,5 @@ public:
 	// for (size_t i = 0; i < gapBegin; i++) action.accept((T) buffer[i]);
 	// for (size_t i = gapEnd; i < buffer.length; i++) action.accept((T) buffer[i]);
 };
-
-#undef CharSeq
 
 using GapBuffer = GapList<char>;
