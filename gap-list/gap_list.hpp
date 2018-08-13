@@ -142,7 +142,8 @@ public:
 		if (index == gapBegin) {
 			for (size_t i = 0; i < sequenceSize; i++) buffer[gapBegin + i] = sequence[i];
 		} else {
-			moveGap(index - gapBegin);
+			bool right = index > gapBegin;
+			moveGap(right ? index - gapBegin : gapBegin - index, right);
 			assert(index == gapBegin);
 			for (size_t i = 0; i < sequenceSize; i++) buffer[gapBegin + i] = sequence[i];
 		}
