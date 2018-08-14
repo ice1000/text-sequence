@@ -15,6 +15,8 @@ class GapList {
 private:
 	template<typename A, typename B>
 	static inline auto max(A &&a, B &&b) { return a > b ? a : b; }
+	template<typename A, typename B>
+	static inline auto arraycopy(A *a, B *b, size_t size) { return memmove(a, b, size * sizeof(A)); }
 
 	T *buffer;
 	size_t bufferLength, gapBegin, gapEnd;
@@ -29,9 +31,9 @@ private:
 		if (afterBegin == gapBegin) return;
 		size_t afterEnd = gapEnd + afterBegin - gapBegin;
 		if (afterBegin > gapBegin) {
-			memmove(buffer + gapEnd, buffer + gapBegin, afterBegin - gapBegin);
+			arraycopy(buffer + gapEnd, buffer + gapBegin, afterBegin - gapBegin);
 		} else {
-			memmove(buffer + afterEnd, buffer + afterBegin, gapBegin - afterBegin);
+			arraycopy(buffer + afterEnd, buffer + afterBegin, gapBegin - afterBegin);
 		}
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
@@ -42,13 +44,13 @@ private:
 		if (bufferLength >= length) return;
 		size_t newLength = max(bufferLength * 2, length);
 		auto newBuffer = new T[newLength];
-		GapList::bufferLength = newLength;
-		memmove(newBuffer + 0, buffer + 0, gapBegin);
+		arraycopy(newBuffer, buffer, gapBegin);
 		size_t newGapEnd = newLength - size() + gapBegin;
-		memmove(newBuffer + newGapEnd, buffer + gapEnd, bufferLength - gapEnd);
+		arraycopy(newBuffer + newGapEnd, buffer + gapEnd, bufferLength - gapEnd);
 		gapEnd = newGapEnd;
 		delete[] buffer;
 		buffer = newBuffer;
+		this->bufferLength = newLength;
 	}
 
 	constexpr inline auto rangeCheck(size_t index) const { assert(index < size()); }
@@ -151,7 +153,7 @@ public:
 		gapBegin += sequenceSize;
 	}
 
-	inline auto move_gap(size_t newIndex) { moveGap(newIndex); }
+	inline auto move_gap(size_t index) { moveGap(index); }
 	inline auto const raw_data() const { return buffer; }
 	inline auto raw_data() { return buffer; }
 	inline auto push_back(const_reference c) { insert(size(), c); }

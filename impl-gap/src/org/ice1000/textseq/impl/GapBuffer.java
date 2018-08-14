@@ -54,10 +54,11 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 
 	@Override
 	public void insert(int index, char c) {
+		checkIndex(index);
 		ensureLength(length() + 1);
 		if (index == gapBegin) buffer[gapBegin++] = c;
 		else {
-			moveGap(index - gapBegin);
+			moveGapTo(index);
 			assert index == gapBegin;
 			buffer[gapBegin++] = c;
 		}
@@ -65,12 +66,13 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 
 	@Override
 	public void insert(int index, @NotNull CharSequence sequence) {
+		checkIndex(index);
 		int length = sequence.length();
 		ensureLength(length() + length);
 		if (index == gapBegin) {
 			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
 		} else {
-			moveGap(index - gapBegin);
+			moveGapTo(index);
 			assert index == gapBegin;
 			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
 		}
@@ -93,7 +95,7 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 		} else if (index == gapBegin - 1) {
 			gapBegin--;
 		} else {
-			moveGap(index - gapBegin);
+			moveGapTo(index);
 			assert index == gapBegin;
 			if (index == size) gapBegin--;
 			else gapEnd++;
@@ -120,6 +122,10 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 //			}
 //		}
 //	}
+
+	private void moveGapTo(int index) {
+		moveGap(index - gapBegin);
+	}
 
 	private void moveGap(int shift) {
 		if (shift == 0) return;

@@ -51,7 +51,7 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	public void insert(int index, char c) {
 		checkIndex(index);
 		length++;
-		if (activeLine == null || !isIndexInCurrentLine(index)) {
+		if (activeLine == null || isIndexNotInCurrentLine(index)) {
 			switchToLineOfIndex(index);
 			assert activeLine != null;
 		}
@@ -78,7 +78,7 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	public void delete(int index) {
 		checkIndex(index);
 		length--;
-		if (activeLine == null || !isIndexInCurrentLine(index)) {
+		if (activeLine == null || isIndexNotInCurrentLine(index)) {
 			switchToLineOfIndex(index);
 			assert activeLine != null;
 		}
@@ -123,8 +123,8 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	}
 
 	@Contract(pure = true)
-	private boolean isIndexInCurrentLine(int index) {
-		return index >= currentLineStart && index <= currentLineEnd;
+	private boolean isIndexNotInCurrentLine(int index) {
+		return index < currentLineStart || index > currentLineEnd;
 	}
 
 	public int lineCount() {

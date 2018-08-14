@@ -21,4 +21,10 @@ public interface TextSequence extends CharSequence {
 	void append(@NotNull CharSequence sequence);
 	void set(int index, char newValue);
 	void checkIndex(int index) throws StringIndexOutOfBoundsException;
+	default boolean isEmpty() {
+		return length() == 0;
+	}
+	default boolean isNotEmpty() {
+		return !isEmpty();
+	}
 }
