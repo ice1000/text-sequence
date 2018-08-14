@@ -25,18 +25,13 @@ private:
 	        size_t gapEnd
 	) : buffer(buffer), bufferLength(size), gapBegin(gapBegin), gapEnd(gapEnd) { }
 
-	auto moveGap(size_t shift, bool right) {
-		if (shift == 0) return;
-		size_t afterBegin = gapBegin;
-		size_t afterEnd = gapEnd;
-		if (right) {
-			afterBegin += shift;
-			afterEnd += shift;
-			memmove(buffer + gapEnd, buffer + gapBegin, shift);
+	auto moveGap(size_t afterBegin) {
+		if (afterBegin == gapBegin) return;
+		size_t afterEnd = gapEnd + afterBegin - gapBegin;
+		if (afterBegin > gapBegin) {
+			memmove(buffer + gapEnd, buffer + gapBegin, afterBegin - gapBegin);
 		} else {
-			afterBegin -= shift;
-			afterEnd -= shift;
-			memmove(buffer + afterEnd, buffer + afterBegin, shift);
+			memmove(buffer + afterEnd, buffer + afterBegin, gapBegin - afterBegin);
 		}
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
@@ -65,10 +60,6 @@ public:
 	explicit GapList() : GapList(32) {}
 	~GapList() { delete[] buffer; }
 
-	typedef T                 value_type;
-	typedef value_type&       value_reference;
-	typedef value_type const& const_value_reference;
-
 	constexpr inline auto size() const noexcept { return bufferLength - gapLength(); }
 	constexpr inline auto empty() const noexcept { return size() == 0; }
 	constexpr inline auto isEmpty() const noexcept { return empty(); }
@@ -77,31 +68,40 @@ public:
 	constexpr inline auto const &operator[](size_t index) const { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
 
 	template <typename Member>
-	struct GapListIter {
+	struct Iter {
 		size_t index;
 		GapList<T> *owner;
-		GapListIter(size_t index, GapList *owner) : index(index), owner(owner) { }
-		Member operator*() { return (*owner)[index]; }
-		GapListIter<Member> &operator++() { ++index; return *this; }
-		auto operator==(const GapListIter &o) { return index == o.index && owner == o.owner; }
-		auto operator!=(const GapListIter &o) { return !(*this == o); }
+
+		Iter(size_t index, GapList *owner) : index(index), owner(owner) { }
+
+		inline Member operator*() const { return (*owner)[index]; }
+		inline auto &operator++() noexcept { ++index; return *this; }
+		inline auto &operator--() noexcept { --index; return *this; }
+		inline Iter<Member> next() const noexcept { return {index + 1, owner}; }
+		inline Iter<Member> prev() const noexcept { return {index - 1, owner}; }
+		inline auto operator==(const Iter &o) const noexcept { return index == o.index && owner == o.owner; }
+		inline auto operator!=(const Iter &o) const noexcept { return !(*this == o); }
 	};
 
-	typedef GapListIter<value_reference>       iterator;
-	typedef GapListIter<const_value_reference> const_iterator;
+	typedef T                     value_type;
+	typedef value_type &          reference;
+	typedef value_type const &    const_reference;
+	typedef value_type *          pointer;
+	typedef const value_type *    const_pointer;
+	typedef Iter<reference>       iterator;
+	typedef Iter<const_reference> const_iterator;
 
 	constexpr iterator begin() { return {0, this}; }
 	constexpr iterator end() { return {size(), this}; }
 	constexpr const_iterator cbegin() const { return {0, this}; }
 	constexpr const_iterator cend() const { return {size(), this}; }
 
-	auto insert(size_t index, const_value_reference c) {
+	auto insert(size_t index, const_reference c) {
 		rangeCheckForAdd(index);
 		ensureLength(size() + 1);
 		if (index == gapBegin) buffer[gapBegin++] = c;
 		else {
-			bool right = index > gapBegin;
-			moveGap(right ? index - gapBegin : gapBegin - index, right);
+			moveGap(index);
 			assert(index == gapBegin);
 			buffer[gapBegin++] = c;
 		}
@@ -118,8 +118,7 @@ public:
 		} else if (index == gapBegin - 1) {
 			result = buffer + gapBegin--;
 		} else {
-			bool right = index > gapBegin;
-			moveGap(right ? index - gapBegin : gapBegin - index, right);
+			moveGap(index);
 			assert(index == gapBegin);
 			result = buffer + gapBegin;
 			if (index == size) gapBegin--;
@@ -128,13 +127,13 @@ public:
 		return result;
 	}
 
-	auto find(const_value_reference o) {
+	auto find(const_reference o) {
 		for (iterator i = buffer, bufferPart = buffer + gapBegin; i < bufferPart; i++) if (o == *i) return i;
 		for (iterator i = buffer + gapEnd, bufferEnd = buffer + bufferLength; i < bufferEnd; i++) if (o == *i) return i;
 		return nullptr;
 	}
 
-	auto find_last(const_value_reference o) {
+	auto find_last(const_reference o) {
 		for (iterator i = buffer + bufferLength - 1, bufferPart = buffer + gapEnd; i >= bufferPart; i--) if (o == *i) return i;
 		for (iterator i = buffer + gapBegin - 1; i >= buffer; i--) if (o == *i) return i;
 		return nullptr;
@@ -145,22 +144,24 @@ public:
 		if (index == gapBegin) {
 			for (size_t i = 0; i < sequenceSize; i++) buffer[gapBegin + i] = sequence[i];
 		} else {
-			bool right = index > gapBegin;
-			moveGap(right ? index - gapBegin : gapBegin - index, right);
+			moveGap(index);
 			assert(index == gapBegin);
 			for (size_t i = 0; i < sequenceSize; i++) buffer[gapBegin + i] = sequence[i];
 		}
 		gapBegin += sequenceSize;
 	}
 
-	inline auto push_back(const_value_reference c) { insert(size(), c); }
-	inline auto append(const_value_reference c) { insert(size(), c); }
-	inline auto push_front(const_value_reference c) { insert(0, c); }
+	inline auto move_gap(size_t newIndex) { moveGap(newIndex); }
+	inline auto const raw_data() const { return buffer; }
+	inline auto raw_data() { return buffer; }
+	inline auto push_back(const_reference c) { insert(size(), c); }
+	inline auto append(const_reference c) { insert(size(), c); }
+	inline auto push_front(const_reference c) { insert(0, c); }
 	inline auto pop_front() { return erase_at(0); }
 	inline auto pop_back() { return erase_at(size() - 1); }
 	inline auto erase(const_iterator iter) { assert(iter > buffer && iter < buffer + bufferLength); return erase_at(iter - buffer); }
 	inline auto clear() { gapBegin = 0; gapEnd = bufferLength; }
-	inline auto contains(const_value_reference o) { return find(o) != nullptr; }
+	inline auto contains(const_reference o) { return find(o) != nullptr; }
 	CharSeq inline auto insert(const CharSequence &sequence, size_t sequenceSize) { insert(size(), sequence, sequenceSize); }
 	CharSeq inline auto append(const CharSequence &sequence, size_t sequenceSize) { insert(size(), sequence, sequenceSize); }
 
