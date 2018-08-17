@@ -64,8 +64,6 @@ public:
 
 	constexpr inline auto size() const noexcept { return bufferLength - gapLength(); }
 	constexpr inline auto empty() const noexcept { return size() == 0; }
-	constexpr inline auto isEmpty() const noexcept { return empty(); }
-	constexpr inline auto isNotEmpty() const noexcept { return !isEmpty(); }
 	constexpr inline auto &operator[](size_t index) { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
 	constexpr inline auto const &operator[](size_t index) const { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
 
@@ -81,8 +79,8 @@ public:
 		inline auto &operator--() noexcept { --index; return *this; }
 		inline Iter<Member> next() const noexcept { return {index + 1, owner}; }
 		inline Iter<Member> prev() const noexcept { return {index - 1, owner}; }
-		inline auto operator==(const Iter &o) const noexcept { return index == o.index && owner == o.owner; }
-		inline auto operator!=(const Iter &o) const noexcept { return !(*this == o); }
+		inline auto operator==(const Iter<Member> &o) const noexcept { return index == o.index && owner == o.owner; }
+		inline auto operator!=(const Iter<Member> &o) const noexcept { return !(*this == o); }
 	};
 
 	typedef T                     value_type;

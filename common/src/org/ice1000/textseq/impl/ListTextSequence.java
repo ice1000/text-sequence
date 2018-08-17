@@ -70,6 +70,9 @@ public interface ListTextSequence extends List<Character>, TextSequence {
 	void clear();
 
 	@Override
+	boolean isEmpty();
+
+	@Override
 	default void set(int index, char newValue) {
 		set(index, (Character) newValue);
 	}
