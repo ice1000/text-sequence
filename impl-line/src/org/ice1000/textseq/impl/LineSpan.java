@@ -131,6 +131,13 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 		return lines.size();
 	}
 
+	public int lineSize(int index) {
+		if (index == activeLineNumber) {
+			assert activeLine != null;
+			return activeLine.length();
+		} else return lines.get(index).length();
+	}
+
 	@Override
 	public void clear() {
 		lines.clear();

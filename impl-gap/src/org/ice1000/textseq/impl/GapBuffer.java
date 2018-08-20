@@ -15,6 +15,17 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 	private char[] buffer;
 	private int gapBegin, gapEnd;
 
+	@Override
+	public @NotNull TextSequence subSequence(int start, int end) {
+		checkIndex(start);
+		checkIndex(end);
+		if (end < start) return new GapBuffer();
+		GapBuffer gapBuffer = new GapBuffer(new char[end - start + 5]);
+		for (int i = start, ok = Math.min(gapBegin, end); i < ok; i++) gapBuffer.append(buffer[i]);
+		for (int i = Math.max(start, gapEnd); i < end; i++) gapBuffer.append(buffer[i]);
+		return gapBuffer;
+	}
+
 	private GapBuffer(@NotNull char[] buffer) {
 		this.buffer = buffer;
 		clear();
