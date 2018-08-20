@@ -155,14 +155,15 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 		int start = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence sequence = iterator.next();
+			int iteratorEnd = start + sequence.length();
 			if (i == line) {
 				activeLine = new GapBuffer(sequence.toString());
 				activeLineNumber = line;
 				currentLineStart = start;
-				currentLineEnd = start + sequence.length();
+				currentLineEnd = iteratorEnd;
 				break; // == return;
 			}
-			start += sequence.length() + 1;
+			start = iteratorEnd + 1;
 		}
 	}
 
