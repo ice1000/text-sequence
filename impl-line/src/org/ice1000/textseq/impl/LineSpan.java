@@ -132,10 +132,7 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	}
 
 	public int lineSize(int index) {
-		if (index == activeLineNumber) {
-			assert activeLine != null;
-			return activeLine.length();
-		} else return lines.get(index).length();
+		return lineAt(index).length();
 	}
 
 	@Override
@@ -163,6 +160,7 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 				activeLineNumber = line;
 				currentLineStart = start;
 				currentLineEnd = start + sequence.length();
+				break; // == return;
 			}
 			start += sequence.length() + 1;
 		}
@@ -180,7 +178,7 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 				activeLineNumber = i;
 				currentLineStart = start;
 				currentLineEnd = iteratorLineEnd;
-				break;
+				break; // == return;
 			}
 			start = iteratorLineEnd + 1;
 		}
