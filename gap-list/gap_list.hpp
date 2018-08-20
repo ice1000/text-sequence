@@ -5,18 +5,25 @@
 
 #define CharSeq template <typename CharSequence>
 
+namespace textseq {
+	template<typename T>
+	class GapList;
+
+	using GapBuffer = GapList<char>;
+}
+
 /**
  * Standalone implementation as a {@link vector}.
  *
  * @author ice1000
  */
 template<typename T>
-class GapList {
+class textseq::GapList {
 private:
 	template<typename A, typename B>
-	static inline auto max(A &&a, B &&b) { return a > b ? a : b; }
+	constexpr static inline auto max(A &&a, B &&b) { return a > b ? a : b; }
 	template<typename A, typename B>
-	static inline auto arraycopy(A *a, B *b, size_t size) { return memmove(a, b, size * sizeof(A)); }
+	constexpr static inline auto arraycopy(A *a, B *b, size_t size) { return memmove(a, b, size * sizeof(A)); }
 
 	T *buffer;
 	size_t bufferLength, gapBegin, gapEnd;
@@ -168,5 +175,3 @@ public:
 	// for (size_t i = 0; i < gapBegin; i++) action.accept((T) buffer[i]);
 	// for (size_t i = gapEnd; i < buffer.length; i++) action.accept((T) buffer[i]);
 };
-
-using GapBuffer = GapList<char>;

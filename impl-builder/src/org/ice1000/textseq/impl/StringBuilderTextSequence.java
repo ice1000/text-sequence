@@ -26,6 +26,11 @@ public class StringBuilderTextSequence extends TextSequenceBase implements TextS
 	}
 
 	@Override
+	public void clear() {
+		impl.setLength(0);
+	}
+
+	@Override
 	public char charAt(int index) {
 		return impl.charAt(index);
 	}

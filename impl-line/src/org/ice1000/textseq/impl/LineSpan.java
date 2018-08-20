@@ -62,7 +62,7 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 			TextSequence second = activeLine.subSequence(indexInCurrentLine, activeLine.length());
 			activeLine = null;
 			lines.set(activeLineNumber, first);
-			lines.set(newLineNumber, second);
+			lines.add(newLineNumber, second);
 			switchToLine(newLineNumber);
 		} else {
 			try {
