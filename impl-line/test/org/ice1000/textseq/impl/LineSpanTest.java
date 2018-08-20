@@ -69,5 +69,7 @@ public class LineSpanTest extends TextSequenceTest {
 		assertEquals(9, lineSpan.lineCount());
 		assertEquals("#", lineSpan.lineAt(0).toString());
 		assertEquals(firstLine.substring(1, firstLine.length() - 1), lineSpan.lineAt(1).toString());
+		lineSpan.delete(1);
+		assertEquals(8, lineSpan.lineCount());
 	}
 }
