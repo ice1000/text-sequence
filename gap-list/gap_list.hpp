@@ -66,13 +66,15 @@ private:
 
 public:
 	explicit GapList(size_t initialCapacity) : GapList(new T[initialCapacity], initialCapacity, 0, initialCapacity) { }
-	explicit GapList() : GapList(32) {}
+	GapList() : GapList(32) {}
 	~GapList() { delete[] buffer; }
 
 	constexpr inline auto size() const noexcept { return bufferLength - gapLength(); }
 	constexpr inline auto empty() const noexcept { return size() == 0; }
 	constexpr inline auto &operator[](size_t index) { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
 	constexpr inline auto const &operator[](size_t index) const { rangeCheck(index); return buffer[index < gapBegin ? index : index + gapLength()]; }
+	constexpr inline auto &at(size_t index) { return operator[](index); }
+	constexpr inline auto const &at(size_t index) const { return operator[](index); }
 
 	template <typename Member>
 	struct Iter {
