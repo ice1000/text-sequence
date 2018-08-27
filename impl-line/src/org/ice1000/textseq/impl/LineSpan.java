@@ -20,8 +20,8 @@ import java.util.LinkedList;
 @SuppressWarnings("WeakerAccess")
 public class LineSpan extends TextSequenceBase implements TextSequence {
 	private @NotNull LinkedList<CharSequence> lines;
-	private @Nullable GapBuffer activeLine;
-	private int activeLineNumber, currentLineStart, currentLineEnd;
+	private @Nullable GapBuffer currentLine;
+	private int currentLineNum, currentLineStart, currentLineEnd;
 	public final char separator;
 	private int length;
 
@@ -51,22 +51,22 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	public void insert(int index, char c) {
 		checkIndex(index);
 		length++;
-		if (activeLine == null || isIndexNotInCurrentLine(index)) {
+		if (currentLine == null || isIndexNotInCurrentLine(index)) {
 			switchToLineOfIndex(index);
-			assert activeLine != null;
+			assert currentLine != null;
 		}
 		int indexInCurrentLine = index - currentLineStart;
 		if (c == separator) {
-			int newLineNumber = activeLineNumber + 1;
-			TextSequence first = activeLine.subSequence(0, indexInCurrentLine);
-			TextSequence second = activeLine.subSequence(indexInCurrentLine, activeLine.length());
-			activeLine = null;
-			lines.set(activeLineNumber, first);
+			int newLineNumber = currentLineNum + 1;
+			TextSequence first = currentLine.subSequence(0, indexInCurrentLine);
+			TextSequence second = currentLine.subSequence(indexInCurrentLine, currentLine.length());
+			currentLine = null;
+			lines.set(currentLineNum, first);
 			lines.add(newLineNumber, second);
 			switchToLine(newLineNumber);
 		} else {
 			try {
-				activeLine.insert(indexInCurrentLine, c);
+				currentLine.insert(indexInCurrentLine, c);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -78,29 +78,29 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	public void delete(int index) {
 		checkIndex(index);
 		length--;
-		if (activeLine == null || isIndexNotInCurrentLine(index)) {
+		if (currentLine == null || isIndexNotInCurrentLine(index)) {
 			switchToLineOfIndex(index);
-			assert activeLine != null;
+			assert currentLine != null;
 		}
 		if (index == currentLineEnd) {
-			int newLineNumber = activeLineNumber + 1;
+			int newLineNumber = currentLineNum + 1;
 			CharSequence sequence = lines.get(newLineNumber);
 			lines.remove(newLineNumber);
-			activeLine.append(sequence);
+			currentLine.append(sequence);
 		} else {
-			activeLine.delete(index - currentLineStart);
+			currentLine.delete(index - currentLineStart);
 		}
 	}
 
 	@Override
 	public char charAt(int index) {
-		if (activeLine == null) throw new StringIndexOutOfBoundsException("Cannot call `charAt` on an empty string.");
+		if (currentLine == null) throw new StringIndexOutOfBoundsException("Cannot call `charAt` on an empty string.");
 		checkIndex(index);
 		int currentLength = 0;
 		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence next = iterator.next();
-			CharSequence line = i == activeLineNumber ? activeLine : next;
+			CharSequence line = i == currentLineNum ? currentLine : next;
 			int currentEnd = currentLength + line.length();
 			if (index < currentEnd && index >= currentLength) return line.charAt(index - currentLength);
 			if (index == currentEnd) return separator;
@@ -111,13 +111,13 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 
 	@Override
 	public @NotNull String toString() {
-		if (activeLine == null) return "";
+		if (currentLine == null) return "";
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			if (i != 0) builder.append(separator);
 			CharSequence line = iterator.next();
-			builder.append(i == activeLineNumber ? activeLine : line);
+			builder.append(i == currentLineNum ? currentLine : line);
 		}
 		return builder.toString();
 	}
@@ -145,20 +145,20 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	}
 
 	public @NotNull CharSequence lineAt(int index) {
-		if (activeLine != null && index == activeLineNumber) return activeLine;
+		if (currentLine != null && index == currentLineNum) return currentLine;
 		return lines.get(index);
 	}
 
 	private void switchToLine(int line) {
-		if (activeLine != null) lines.set(activeLineNumber, activeLine.toString());
+		if (currentLine != null) lines.set(currentLineNum, currentLine.toString());
 		int i = 0;
 		int start = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence sequence = iterator.next();
 			int iteratorEnd = start + sequence.length();
 			if (i == line) {
-				activeLine = new GapBuffer(sequence.toString());
-				activeLineNumber = line;
+				currentLine = new GapBuffer(sequence.toString());
+				currentLineNum = line;
 				currentLineStart = start;
 				currentLineEnd = iteratorEnd;
 				break; // == return;
@@ -168,15 +168,15 @@ public class LineSpan extends TextSequenceBase implements TextSequence {
 	}
 
 	private void switchToLineOfIndex(int index) {
-		if (activeLine != null) lines.set(activeLineNumber, activeLine.toString());
+		if (currentLine != null) lines.set(currentLineNum, currentLine.toString());
 		int start = 0;
 		int i = 0;
 		for (Iterator<CharSequence> iterator = lines.iterator(); iterator.hasNext(); i++) {
 			CharSequence sequence = iterator.next();
 			int iteratorLineEnd = start + sequence.length();
 			if (index <= iteratorLineEnd) {
-				activeLine = new GapBuffer(sequence.toString());
-				activeLineNumber = i;
+				currentLine = new GapBuffer(sequence.toString());
+				currentLineNum = i;
 				currentLineStart = start;
 				currentLineEnd = iteratorLineEnd;
 				break; // == return;
