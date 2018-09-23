@@ -48,11 +48,8 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	public void add(int index, T c) {
 		rangeCheckForAdd(index);
 		ensureLength(size() + 1);
-		if (index == gapBegin) buffer[gapBegin++] = c;
-		else {
-			moveGap(index);
-			buffer[gapBegin++] = c;
-		}
+		if (index != gapBegin) moveGap(index);
+		buffer[gapBegin++] = c;
 	}
 
 	@Override
@@ -106,8 +103,8 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	private void moveGap(int afterBegin) {
 		if (afterBegin == gapBegin) return;
 		int afterEnd = gapEnd + afterBegin - gapBegin;
-		if (afterBegin > gapBegin) System.arraycopy(buffer, gapBegin, buffer, gapEnd, afterBegin - gapBegin);
-		else System.arraycopy(buffer, afterEnd, buffer, afterBegin, gapBegin - afterBegin);
+		if (afterBegin > gapBegin) System.arraycopy(buffer, gapEnd, buffer, gapBegin, afterBegin - gapBegin);
+		else System.arraycopy(buffer, afterBegin, buffer, afterEnd, gapBegin - afterBegin);
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
 	}

@@ -135,8 +135,8 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 	private void moveGap(int afterBegin) {
 		if (afterBegin == gapBegin) return;
 		int afterEnd = gapEnd + afterBegin - gapBegin;
-		if (afterBegin > gapBegin) System.arraycopy(buffer, gapBegin, buffer, gapEnd, afterBegin - gapBegin);
-		else System.arraycopy(buffer, afterEnd, buffer, afterBegin, gapBegin - afterBegin);
+		if (afterBegin > gapBegin) System.arraycopy(buffer, gapEnd, buffer, gapBegin, afterBegin - gapBegin);
+		else System.arraycopy(buffer, afterBegin, buffer, afterEnd, gapBegin - afterBegin);
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
 	}
