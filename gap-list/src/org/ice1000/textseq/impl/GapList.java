@@ -50,16 +50,9 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 		ensureLength(size() + 1);
 		if (index == gapBegin) buffer[gapBegin++] = c;
 		else {
-			moveGap(index - gapBegin);
-			assert index == gapBegin;
+			moveGap(index);
 			buffer[gapBegin++] = c;
 		}
-	}
-
-	@Override
-	public boolean add(T t) {
-		add(size(), t);
-		return true;
 	}
 
 	@Override
@@ -70,8 +63,7 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 		if (index == gapBegin) {
 			System.arraycopy(objects, 0, buffer, gapBegin, objects.length);
 		} else {
-			moveGap(index - gapBegin);
-			assert index == gapBegin;
+			moveGap(index);
 			System.arraycopy(objects, 0, buffer, gapBegin, objects.length);
 		}
 		gapBegin += objects.length;
@@ -97,30 +89,25 @@ public class GapList<T> extends AbstractList<T> implements List<T>, RandomAccess
 	public T remove(int index) {
 		rangeCheck(index);
 		Object result;
-		int size = size();
-		if (index == gapBegin) {
-			result = buffer[gapBegin];
-			if (index == size) gapBegin--;
-			else gapEnd++;
-		} else if (index == gapBegin - 1) {
+		if (index == gapBegin - 1) {
 			result = buffer[gapBegin--];
-		} else {
-			moveGap(index - gapBegin);
-			assert index == gapBegin;
+		} else if (index == gapBegin) {
 			result = buffer[gapBegin];
-			if (index == size) gapBegin--;
-			else gapEnd++;
+			gapEnd++;
+		} else {
+			moveGap(index);
+			result = buffer[gapBegin];
+			gapEnd++;
 		}
 		//noinspection unchecked
 		return (T) result;
 	}
 
-	private void moveGap(int shift) {
-		if (shift == 0) return;
-		int afterBegin = gapBegin + shift;
-		int afterEnd = gapEnd + shift;
-		if (shift > 0) System.arraycopy(buffer, gapBegin, buffer, gapEnd, shift);
-		else System.arraycopy(buffer, afterBegin, buffer, afterEnd, -shift);
+	private void moveGap(int afterBegin) {
+		if (afterBegin == gapBegin) return;
+		int afterEnd = gapEnd + afterBegin - gapBegin;
+		if (afterBegin > gapBegin) System.arraycopy(buffer, gapBegin, buffer, gapEnd, afterBegin - gapBegin);
+		else System.arraycopy(buffer, afterEnd, buffer, afterBegin, gapBegin - afterBegin);
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
 	}

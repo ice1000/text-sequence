@@ -69,8 +69,7 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 		ensureLength(length() + 1);
 		if (index == gapBegin) buffer[gapBegin++] = c;
 		else {
-			moveGapTo(index);
-			assert index == gapBegin;
+			moveGap(index);
 			buffer[gapBegin++] = c;
 		}
 	}
@@ -83,8 +82,7 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 		if (index == gapBegin) {
 			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
 		} else {
-			moveGapTo(index);
-			assert index == gapBegin;
+			moveGap(index);
 			for (int i = 0; i < length; i++) buffer[gapBegin + i] = sequence.charAt(i);
 		}
 		gapBegin += length;
@@ -99,17 +97,17 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 	@Override
 	public void delete(int index) {
 		checkIndex(index);
-		int size = length();
-		if (index == gapBegin) {
-			if (index == size) gapBegin--;
-			else gapEnd++;
-		} else if (index == gapBegin - 1) {
+		// Object result;
+		if (index == gapBegin - 1) {
+			// result = buffer[gapBegin--];
 			gapBegin--;
+		} else if (index == gapBegin) {
+			// result = buffer[gapBegin];
+			gapEnd++;
 		} else {
-			moveGapTo(index);
-			assert index == gapBegin;
-			if (index == size) gapBegin--;
-			else gapEnd++;
+			moveGap(index);
+			// result = buffer[gapBegin];
+			gapEnd++;
 		}
 	}
 
@@ -134,18 +132,11 @@ public class GapBuffer extends TextSequenceBase implements TextSequence {
 //		}
 //	}
 
-	private void moveGapTo(int index) {
-		moveGap(index - gapBegin);
-	}
-
-	private void moveGap(int shift) {
-		if (shift == 0) return;
-		int afterBegin = gapBegin + shift;
-		int afterEnd = gapEnd + shift;
-		checkInternalIndex(afterBegin);
-		checkInternalIndex(afterEnd);
-		if (shift > 0) System.arraycopy(buffer, gapBegin, buffer, gapEnd, shift);
-		else System.arraycopy(buffer, afterBegin, buffer, afterEnd, -shift);
+	private void moveGap(int afterBegin) {
+		if (afterBegin == gapBegin) return;
+		int afterEnd = gapEnd + afterBegin - gapBegin;
+		if (afterBegin > gapBegin) System.arraycopy(buffer, gapBegin, buffer, gapEnd, afterBegin - gapBegin);
+		else System.arraycopy(buffer, afterEnd, buffer, afterBegin, gapBegin - afterBegin);
 		gapBegin = afterBegin;
 		gapEnd = afterEnd;
 	}
