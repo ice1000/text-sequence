@@ -25,6 +25,8 @@ public final class ArrayListTextSequence extends ArrayList<Character> implements
 
 	@Override
 	public @NotNull String toString() {
-		return String.join("", this);
+		StringBuilder builder = new StringBuilder();
+		forEach(builder::append);
+		return builder.toString();
 	}
 }

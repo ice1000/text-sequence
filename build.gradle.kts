@@ -1,15 +1,10 @@
 import com.jfrog.bintray.gradle.*
 
-buildscript {
-	repositories { jcenter() }
-	dependencies { classpath("com.palantir:jacoco-coverage:0.4.0") }
-}
-
 plugins {
 	java
 	jacoco
 	`maven-publish`
-	id("com.jfrog.bintray") version "1.7.3"
+	id("com.jfrog.bintray") version "1.8.4"
 }
 
 var isCI: Boolean by extra
@@ -22,12 +17,17 @@ allprojects {
 	apply {
 		plugin("java")
 		plugin("jacoco")
-		plugin("com.palantir.jacoco-full-report")
 	}
 
 	repositories {
 		mavenCentral()
 		jcenter()
+	}
+
+	dependencies {
+		implementation(group = "org.jetbrains", name = "annotations", version = "19.0.0")
+		testImplementation(group = "junit", name = "junit", version = "4.12")
+		testImplementation(group = "org.hamcrest", name = "hamcrest-library", version = "1.3")
 	}
 
 	tasks.withType<JavaCompile> {
@@ -43,7 +43,7 @@ allprojects {
 
 	val sourcesJar = task<Jar>("sourcesJar") {
 		group = tasks["jar"].group
-		from(java.sourceSets["main"].allSource)
+		from(sourceSets["main"].allSource)
 		classifier = "sources"
 	}
 
@@ -80,19 +80,30 @@ subprojects {
 	}
 
 	publishing {
-		(publications) {
-			"mavenJava"(MavenPublication::class) {
+		publications {
+			create<MavenPublication>("maven") {
 				from(components["java"])
 				groupId = project.group.toString()
 				artifactId = "${rootProject.name}-${project.name}"
 				version = project.version.toString()
 				artifact(tasks["sourcesJar"])
-				pom.withXml {
-					val root = asNode()
-					root.appendNode("description", "Text sequence data structures")
-					root.appendNode("name", project.name)
-					root.appendNode("url", githubUrl)
-					root.children().last()
+				pom {
+					description.set("Text sequence data structures")
+					name.set(project.name)
+					url.set(githubUrl)
+					licenses {
+						license {
+							name.set("The Apache License, Version 2.0")
+							url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+						}
+					}
+					developers {
+						developer {
+							id.set("ice1000")
+							name.set("Tesla Ice Zhang")
+							email.set("ice1000kotlin@foxmail.com")
+						}
+					}
 				}
 			}
 		}

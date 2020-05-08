@@ -56,7 +56,7 @@ jobs:
           path: gap-list/build/libs
 
       # run tests!
-      - run: gradle test jacocoFullReport --info --no-daemon
+      - run: gradle test --info --no-daemon
 
       # save test results!
-      - run: bash <(curl -s https://codecov.io/bash)
+      # - run: bash <(curl -s https://codecov.io/bash)
